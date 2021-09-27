@@ -1,15 +1,24 @@
-SEARCH  := $(foreach dir, $(DIRS), ../$(dir)/*.cpp ../$(dir)/*.c) *.c *.cpp  
+SEARCH  := $(foreach dir, $(DIRS),../$(dir)/*.cpp ../$(dir)/*.c) *.c *.cpp  
 SOURCES := $(wildcard $(SEARCH))
 OBJECTS := $(patsubst %.cpp, %.o, $(SOURCES))
 OBJECTS := $(patsubst %.c, %.o, $(OBJECTS))
 
-%.o:	%.cpp
-	$(CC) -I../ -c $< -o $@
+ifdef ComSpec
+	RM=del /F /Q
+	OBJECTS := $(subst /,\, $(OBJECTS))
+	OBJECTS := $(subst .o,.obj, $(OBJECTS))
+endif
+
+%.obj:	%.cpp
+	cl -I../ -c /nologo $< /Fo$@
+
+%.obj:	%.c
+	cl -I../ -c /nologo $< /Fo$@
 
 all:	test
 
 test:	$(OBJECTS)
-	llvm-g++ $(OBJECTS) -o test
+	cl $(OBJECTS) /nologo /link /out:test.exe
 
 info:
 	@echo $(SEARCH)
@@ -17,4 +26,4 @@ info:
 	@echo $(OBJECTS)
 
 clean:
-	-rm $(OBJECTS) test
+	-$(RM) $(OBJECTS) test.exe
