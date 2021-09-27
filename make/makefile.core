@@ -1,4 +1,4 @@
-SEARCH  := *.c *.cpp $(foreach dir, $(DIRS), ../$(dir)/*.cpp ../$(dir)/*.c) 
+SEARCH  := $(foreach dir, $(DIRS), ../$(dir)/*.cpp ../$(dir)/*.c) *.c *.cpp  
 SOURCES := $(wildcard $(SEARCH))
 OBJECTS := $(patsubst %.cpp, %.o, $(SOURCES))
 OBJECTS := $(patsubst %.c, %.o, $(OBJECTS))
