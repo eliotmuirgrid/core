@@ -1,5 +1,4 @@
-DIRS=\
-COL\
+DIRS=
 
 include ../make/makefile.core
 
