@@ -1,0 +1,20 @@
+SEARCH  := *.c *.cpp $(foreach dir, $(DIRS), ../$(dir)/*.cpp ../$(dir)/*.c) 
+SOURCES := $(wildcard $(SEARCH))
+OBJECTS := $(patsubst %.cpp, %.o, $(SOURCES))
+OBJECTS := $(patsubst %.c, %.o, $(OBJECTS))
+
+%.o:	%.cpp
+	$(CC) -I../ -c $< -o $@
+
+all:	test
+
+test:	$(OBJECTS)
+	llvm-g++ $(OBJECTS) -o test
+
+info:
+	@echo $(SEARCH)
+	@echo $(SOURCES)
+	@echo $(OBJECTS)
+
+clean:
+	-rm $(OBJECTS) test
