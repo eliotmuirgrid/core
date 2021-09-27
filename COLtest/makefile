@@ -1,5 +1,5 @@
 DIRS=\
-LUA\
+lua\
 COL\
 
 include ../make/makefile.core
