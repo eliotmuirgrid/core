@@ -29,7 +29,7 @@ test.exe:	$(OBJECTS)
 	cl $(OBJECTS) /nologo /link /out:test.exe
 
 test:	$(OBJECTS)
-	$(CC) $(OBJECTS) -o test
+	$(CC) $(OBJECTS) -lm -o test
 
 info:
 	@echo $(SEARCH)
