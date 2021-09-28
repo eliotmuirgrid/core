@@ -29,7 +29,7 @@ test.exe:	$(OBJECTS)
 	cl $(OBJECTS) /nologo /link /out:test.exe
 
 test:	$(OBJECTS)
-	llvm-g++ $(OBJECTS) -o test
+	$(CC) $(OBJECTS) -o test
 
 info:
 	@echo $(SEARCH)
