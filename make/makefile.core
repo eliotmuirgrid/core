@@ -14,30 +14,29 @@ ifdef ComSpec
 	OBJECTS := $(subst /,\, $(OBJECTS))
 	OBJECTS := $(subst .o,.obj, $(OBJECTS))
    TARGET := test.exe
+else # We use ccache on our posix compiles if it is present.
+   CCACHE := $(shell command -v ccache  2> /dev/null)
+   ifdef CCACHE
+      CC := ccache $(CC)
+   endif
 endif
 
-# Windows build commands
-%.obj:	%.cpp
-	cl -I../ -c /nologo $< /Fo$@
-%.obj:	%.c
+%.obj:	%.c*	# Windows build command
 	cl -I../ -c /nologo $< /Fo$@
 
-# Posix build commands
-%.o:	%.cpp
-	$(CC) -MMD -I../ -c $< -o $@
-
-%.o:	%.c
+%.o:	%.c*	# Posix build command
 	$(CC) -MMD -I../ -c $< -o $@
 
 all:	$(TARGET)
 
-test.exe:	$(OBJECTS)
+test.exe:	$(OBJECTS) # Windows link command
 	cl $(OBJECTS) /nologo /link /out:test.exe
 
-test:	$(OBJECTS)
+test:	$(OBJECTS) # Posix link command
 	$(CC) $(OBJECTS) -lm -o test
 
 info:
+	@echo $(CC)
 	@echo $(SEARCH)
 	@echo $(SOURCES)
 	@echo $(OBJECTS)
