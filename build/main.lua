@@ -1,15 +1,33 @@
-local D = io.popen("echo hi")
--- local R = D:read("*a")
--- print(R)
-local R = "Eliot"
-os.execute("echo "..R)
+function buildout (text)
+   os.execute("echo "..text)
+end   
 
--- os.execute("CURL https://www.interfaceware.com/")
--- os.execute("echo hello")
--- local D = io.popen("CURL https://www.interfaceware.com/")
--- local R = D:read('*a')
--- D:close()
+function request (cmd)
+   local D = io.popen(cmd)
+   local R = D:read("*a")
+   D:close()
+   return R
+end
 
--- local f = io.open('cmd_out', 'w')
--- f:write(R)
--- f:close()
+function latestHash() 
+   return request("git log --max-count=1 --all --pretty=format:\"%H\"") 
+end
+
+function latestDescription() 
+   return request("git log --max-count=1 --all --pretty=format:\"%H:%s - %an \"") 
+end
+
+
+buildout("GIT watcher current status: "..latestDescription())
+local Hash = latestHash()
+local NewHash = Hash
+while true do 
+   request("git pull --all")
+   NewHash = latestHash()
+   if Hash ~= NewHash then
+      buildout("new commit deteced!")
+      buildout(latestDescription())
+   end
+   Hash = NewHash
+end
+
