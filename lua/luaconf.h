@@ -36,6 +36,18 @@
 ** =====================================================================
 */
 
+#ifdef _WIN32
+	#define LUA_USE_WINDOWS
+#endif
+
+#ifdef __linux__
+	#define LUA_USE_LINUX
+#endif
+
+#ifdef __APPLE__
+	#define LUA_USE_MACOSX
+#endif
+
 /*
 @@ LUA_USE_C89 controls the use of non-ISO-C89 features.
 ** Define it if you want Lua to avoid the use of a few C99 features
