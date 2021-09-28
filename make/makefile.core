@@ -2,11 +2,13 @@ SEARCH  := $(foreach dir, $(DIRS),../$(dir)/*.cpp ../$(dir)/*.c) *.c *.cpp
 SOURCES := $(wildcard $(SEARCH))
 OBJECTS := $(patsubst %.cpp, %.o, $(SOURCES))
 OBJECTS := $(patsubst %.c, %.o, $(OBJECTS))
+TARGET=test
 
 ifdef ComSpec
 	RM=del /F /Q
 	OBJECTS := $(subst /,\, $(OBJECTS))
 	OBJECTS := $(subst .o,.obj, $(OBJECTS))
+   TARGET := test.exe
 endif
 
 %.obj:	%.cpp
@@ -15,10 +17,19 @@ endif
 %.obj:	%.c
 	cl -I../ -c /nologo $< /Fo$@
 
-all:	test
+%.o:	%.cpp
+	$(CC) -I../ -c $< -o $@
+
+%.o:	%.c
+	$(CC) -I../ -c $< -o $@
+
+all:	$(TARGET)
+
+test.exe:	$(OBJECTS)
+	cl $(OBJECTS) /nologo /link /out:test.exe
 
 test:	$(OBJECTS)
-	cl $(OBJECTS) /nologo /link /out:test.exe
+	llvm-g++ $(OBJECTS) -o test
 
 info:
 	@echo $(SEARCH)
@@ -26,4 +37,4 @@ info:
 	@echo $(OBJECTS)
 
 clean:
-	-$(RM) $(OBJECTS) test.exe
+	-$(RM) $(OBJECTS) $(TARGET)
