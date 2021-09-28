@@ -2,8 +2,13 @@ SEARCH  := $(foreach dir, $(DIRS),../$(dir)/*.cpp ../$(dir)/*.c) *.c *.cpp
 SOURCES := $(wildcard $(SEARCH))
 OBJECTS := $(patsubst %.cpp,%.o,$(SOURCES))
 OBJECTS := $(patsubst %.c,%.o,$(OBJECTS))
+DEPENDS := $(subst .o,.d, $(OBJECTS))
 TARGET=test
 
+# Include generated dependency files
+-include $(DEPENDS)
+
+# ComSpec is just defined for Windows
 ifdef ComSpec
 	RM=del /F /Q
 	OBJECTS := $(subst /,\, $(OBJECTS))
@@ -11,17 +16,18 @@ ifdef ComSpec
    TARGET := test.exe
 endif
 
+# Windows build commands
 %.obj:	%.cpp
 	cl -I../ -c /nologo $< /Fo$@
-
 %.obj:	%.c
 	cl -I../ -c /nologo $< /Fo$@
 
+# Posix build commands
 %.o:	%.cpp
-	$(CC) -I../ -c $< -o $@
+	$(CC) -MMD -I../ -c $< -o $@
 
 %.o:	%.c
-	$(CC) -I../ -c $< -o $@
+	$(CC) -MMD -I../ -c $< -o $@
 
 all:	$(TARGET)
 
@@ -35,6 +41,7 @@ info:
 	@echo $(SEARCH)
 	@echo $(SOURCES)
 	@echo $(OBJECTS)
+	@echo $(DEPENDS)
 
 clean:
-	-$(RM) $(OBJECTS) $(TARGET)
+	-$(RM) $(OBJECTS) $(TARGET) $(DEPENDS)
