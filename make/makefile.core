@@ -21,10 +21,12 @@ else # We use ccache on our posix compiles if it is present.
    endif
 endif
 
-%.obj:	%.c*	# Windows build command
+# Windows build command
+%.obj:	%.c*
 	cl -I../ -c /nologo $< /Fo$@
 
-%.o:	%.c*	# Posix build command
+# Posix build command
+%.o:	%.c*
 	$(CC) -MMD -I../ -c $< -o $@
 
 all:	$(TARGET)
