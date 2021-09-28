@@ -17,6 +17,7 @@ function latestDescription()
    return request("git log --max-count=1 --all --pretty=format:\"%H:%s - %an \"") 
 end
 
+-- a comment
 
 buildout("GIT watcher current status: "..latestDescription())
 local Hash = latestHash()
