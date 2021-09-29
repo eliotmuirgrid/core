@@ -22,12 +22,13 @@ int APPwriter(lua_State *L, const void* p, size_t sz, void* ud){
   BAS_FUNCTION(APPwriter);
   BASstring String((char*)p, (int)sz);
   BAS_VAR2(sz, String.data());
+  BAS_HEX(p, sz);
   return sz;
 }
 
 
 int main(int argc, char *argv[]) {
-  BASsetTracePattern("*");
+  BASsetTracePattern("main");
   BAS_FUNCTION(main);
   // Open lua
   lua_State *L = lua_open();

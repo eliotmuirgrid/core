@@ -34,8 +34,6 @@ BASstream& operator<<(BASstream& Stream, unsigned long Number);
 BASstream& operator<<(BASstream& Stream, double Number);
 
 
-
-
 BASstream& operator<<(BASstream& Stream, BASstream&(*pFunc)(BASstream&));
 
 BASstream& flush(BASstream& Stream);

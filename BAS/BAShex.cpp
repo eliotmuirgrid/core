@@ -39,8 +39,10 @@ static void BASpadd(char** pBuffer, int Size){
    }
 }
 
-void BAShex(int Size, const char* pData, BASsink* pSink){
+// Not the most beautiful implementation
+void BAShex(int Size, const void* pRawData, BASsink* pSink){
    BAS_FUNCTION(BAShex);
+   const char* pData = (const char*)pRawData;
    BAS_VAR2(Size, pData);
    char Buffer[34];
    BAS_VAR((size_t)Buffer);
@@ -69,5 +71,4 @@ void BAShex(int Size, const char* pData, BASsink* pSink){
       }
       pSink->write("\n", 1);
    }
-   pSink->write("\n", 1);
 }

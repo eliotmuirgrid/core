@@ -24,6 +24,7 @@
 #include "BASstream.h"
 #include <stdio.h>
 #include "BASmutex.h"
+#include "BAShex.h"
 #include <string.h>
 
 // Call this to activate tracing if you need more control - using
@@ -61,6 +62,17 @@ bool BASloggingEnabled(const char* ModuleName, int* pResult);
          BAStimeStamp(sModule.ModuleName); BAStrace << X;\
       }\
    } while(0)
+
+#define BAS_HEX(BUFFER, SIZE)\
+   do {\
+      static int BASdoLog;\
+      if (BASdoLog > 0 || (BASdoLog == 0 && BASloggingEnabled(sModule.ModuleName, &BASdoLog)) ){\
+         BASlocker Lock(s_LogMutex);\
+         BAStimeStamp(sModule.ModuleName); BAShex(SIZE, BUFFER, BAStrace.sink());\
+      }\
+   } while(0)
+
+
 
 
 #define BAS_VAR(A)        BAS_TRC(#A << " = " << A);

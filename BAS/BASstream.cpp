@@ -9,6 +9,7 @@
 #include "BASstream.h"
 #include "BASsink.h"
 #include "BASsinkStandardOut.h"
+#include "BAShex.h"
 
 #include <string.h>
 #include <stdio.h>
@@ -109,5 +110,3 @@ BASstream& flush(BASstream& Stream) {
 BASstream& operator<<(BASstream& Stream, BASstream&(*pFunc)(BASstream&)){
    return (*pFunc)(Stream);
 }
-
-
