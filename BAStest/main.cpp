@@ -6,17 +6,22 @@
 // What will become a unit test.
 //-------------------------------------------------------
 
+#include <BAS/BAStrace.h>
+BAS_TRACE_INIT;
+
+
 #include <BAS/BASstring.h>
 #include <BAS/BASstream.h>
+#include <BAS/BAShex.h>
+
+
 
 #include <stdio.h>
 
 int main(){
-   BASout << "ggg" << newline;
-   BASstring String;
-   String = "Hello world!";
-  
-   printf("%s\n", String.data());
+   BASsetTracePattern("*");
+   BASout << "Hello world..." << newline;
+   BAShex(5, (void*)"string");
 
    return 0;
 }
