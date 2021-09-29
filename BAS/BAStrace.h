@@ -43,7 +43,12 @@ public:
     char ModuleName[25];
 };
 
-#define __FILENAME__ (strrchr(__FILE__, '/') ? strrchr(__FILE__, '/') + 1 : __FILE__)
+#ifdef _WIN32
+   #define __FILENAME__ (strrchr("\\" __FILE__, '\\') + 1)
+#else
+   #define __FILENAME__ (strrchr("/" __FILE__, '/') + 1)
+#endif
+
 #define BAS_TRACE_INIT static BASmodule sModule(__FILENAME__);
 
 bool BASloggingEnabled(const char* ModuleName, int* pResult);
