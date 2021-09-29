@@ -13,6 +13,7 @@ BAS_TRACE_INIT;
 #include <BAS/BASstring.h>
 #include <BAS/BASstream.h>
 #include <BAS/BAShex.h>
+#include <BAS/BASsinkStandardOut.h>
 
 
 
@@ -21,7 +22,10 @@ BAS_TRACE_INIT;
 int main(){
    BASsetTracePattern("BA*");
    BASout << "Hello world..." << newline;
-   BAShex(5, (void*)"string");
+   BASsinkStandardOut Sink;
+   BASstring Me = "Hello world...";
+
+   BAShex(Me.size(), Me.data(), &Sink);
 
    return 0;
 }

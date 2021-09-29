@@ -8,6 +8,8 @@
 // Function to convert a block of data into a hex block.
 //-------------------------------------------------------
 
-void BAShex(int Size, void* pData);
+class BASsink;
+
+void BAShex(int Size, const char* pData, BASsink* pSink);
 
 #endif
