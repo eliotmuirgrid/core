@@ -27,7 +27,7 @@ int APPwriter(lua_State *L, const void* p, size_t sz, void* ud){
 
 
 int main(int argc, char *argv[]) {
-  BASsetTracePattern("*");
+  BASsetTracePattern("pluto*");
   BAS_FUNCTION(main);
   // Open lua
   lua_State *L = lua_open();
