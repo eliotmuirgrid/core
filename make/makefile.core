@@ -37,7 +37,7 @@ test.exe:	$(OBJECTS)
 	cl $(OBJECTS) /nologo /link /out:test.exe
 
 test:	$(OBJECTS) $(SOURCES)
-	$(CC) $(OBJECTS) -lm -o test
+	$(CC) $(OBJECTS) -lm -lstdc++ -o test
 
 info:
 	@echo $(CC)

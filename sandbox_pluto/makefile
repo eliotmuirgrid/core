@@ -1,4 +1,5 @@
 DIRS=\
+BAS\
 pluto\
 lua5032
 
