@@ -11,6 +11,7 @@ BAS_TRACE_INIT;
 
 #include "BASsinkStandardOut.h"
 #include "BASglob.h"
+#include "BAShex.h"
 
 #include <time.h>
 #include <stdio.h>  // for printf
@@ -120,4 +121,10 @@ static const char* s_pIndent = G G G G G G G G G G G G G G G G G G G G G G G G G
 
 void BASwriteIndent(BASsink* pSink, int Level){
    pSink->write(s_pIndent, Level*2);
+}
+
+
+void BAShexTrace(int Size, const void* pBuffer, BASstream& Stream){
+   Stream << " (size=" << Size << ")" << newline;
+   BAShex(Size, pBuffer, Stream.sink(), 60);
 }

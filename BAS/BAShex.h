@@ -10,6 +10,6 @@
 
 class BASsink;
 
-void BAShex(int Size, const void* pData, BASsink* pSink);
+void BAShex(int Size, const void* pData, BASsink* pSink, int Indent);
 
 #endif

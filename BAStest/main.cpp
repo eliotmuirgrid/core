@@ -26,10 +26,11 @@ int main(){
    BASsinkStandardOut Sink;
    BASstring Me = "Hello world...!?";
 
-   BAShex(Me.size(), Me.data(), &Sink);
+   BAShex(Me.size(), Me.data(), &Sink, 0);
    Me += "extra";
-   BAShex(Me.size(), Me.data(), &Sink);
+   BAShex(Me.size(), Me.data(), &Sink, 0);
    
+   BAShex(1, "6", &Sink, 0);
 
    return 0;
 }
