@@ -2,39 +2,47 @@ SEARCH  := $(foreach dir, $(DIRS),../$(dir)/*.cpp ../$(dir)/*.c) *.c *.cpp
 SOURCES := $(wildcard $(SEARCH))
 OBJECTS := $(patsubst %.cpp,%.o,$(SOURCES))
 OBJECTS := $(patsubst %.c,%.o,$(OBJECTS))
+DEPENDS := $(subst .o,.d, $(OBJECTS))
 TARGET=test
 
+# Include generated dependency files
+-include $(DEPENDS)
+
+# ComSpec is just defined for Windows
 ifdef ComSpec
 	RM=del /F /Q
 	OBJECTS := $(subst /,\, $(OBJECTS))
 	OBJECTS := $(subst .o,.obj, $(OBJECTS))
    TARGET := test.exe
+else # We use ccache on our posix compiles if it is present.
+   CCACHE := $(shell command -v ccache  2> /dev/null)
+   ifdef CCACHE
+      CC := ccache $(CC)
+   endif
 endif
 
-%.obj:	%.cpp
+# Windows build command
+%.obj:	%.c*
 	cl -I../ -c /nologo $< /Fo$@
 
-%.obj:	%.c
-	cl -I../ -c /nologo $< /Fo$@
-
-%.o:	%.cpp
-	$(CC) -I../ -c $< -o $@
-
-%.o:	%.c
-	$(CC) -I../ -c $< -o $@
+# Posix build command
+%.o:	%.c*
+	$(CC) -MMD -I../ -c $< -o $@
 
 all:	$(TARGET)
 
-test.exe:	$(OBJECTS)
+test.exe:	$(OBJECTS) # Windows link command
 	cl $(OBJECTS) /nologo /link /out:test.exe
 
-test:	$(OBJECTS)
-	llvm-g++ $(OBJECTS) -o test
+test:	$(OBJECTS) # Posix link command
+	$(CC) $(OBJECTS) -lm -o test
 
 info:
+	@echo $(CC)
 	@echo $(SEARCH)
 	@echo $(SOURCES)
 	@echo $(OBJECTS)
+	@echo $(DEPENDS)
 
 clean:
-	-$(RM) $(OBJECTS) $(TARGET)
+	-$(RM) $(OBJECTS) $(TARGET) $(DEPENDS)
