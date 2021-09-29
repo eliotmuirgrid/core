@@ -24,6 +24,7 @@
 #include "BASstream.h"
 #include <stdio.h>
 #include "BASmutex.h"
+#include <string.h>
 
 // Call this to activate tracing if you need more control - using
 // BASargParser will make it difficult to trace the BASstring class etc.
@@ -42,7 +43,13 @@ public:
     char ModuleName[25];
 };
 
-#define BAS_TRACE_INIT static BASmodule sModule(__FILE__);
+#ifdef _WIN32
+   #define __FILENAME__ (strrchr("\\" __FILE__, '\\') + 1)
+#else
+   #define __FILENAME__ (strrchr("/" __FILE__, '/') + 1)
+#endif
+
+#define BAS_TRACE_INIT static BASmodule sModule(__FILENAME__);
 
 bool BASloggingEnabled(const char* ModuleName, int* pResult);
 
