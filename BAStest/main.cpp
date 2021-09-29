@@ -19,7 +19,7 @@ BAS_TRACE_INIT;
 #include <stdio.h>
 
 int main(){
-   BASsetTracePattern("*");
+   BASsetTracePattern("BA*");
    BASout << "Hello world..." << newline;
    BAShex(5, (void*)"string");
 
