@@ -19,7 +19,7 @@ int main(int argc, char *argv[]) {
   lua_setglobal(L, "print");
 
   // Execution of a lua string
-  lua_dostring(L, "local X = 42; print('The answer to life and universe and everything is '..X..'\n');");
+  lua_dostring(L, "local X = 42; print('The answer to life and universe and everything is '..X..'\\n');");
   // Close lua
 
 
