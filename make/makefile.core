@@ -2,15 +2,12 @@ SEARCH  := $(foreach dir, $(DIRS),../$(dir)/*.cpp ../$(dir)/*.c) *.c *.cpp
 SOURCES := $(wildcard $(SEARCH))
 OBJECTS := $(patsubst %.cpp,%.o,$(SOURCES))
 OBJECTS := $(patsubst %.c,%.o,$(OBJECTS))
-DEPENDS := $(subst .o,.d, $(OBJECTS))
 TARGET=test
-
-# Include generated dependency files
--include $(DEPENDS)
 
 # ComSpec is just defined for Windows
 ifdef ComSpec
 	RM=del /F /Q
+	DEPENDS := $(subst .o,.d, $(OBJECTS))
 	OBJECTS := $(subst /,\, $(OBJECTS))
 	OBJECTS := $(subst .o,.obj, $(OBJECTS))
    TARGET := test.exe
@@ -48,3 +45,6 @@ info:
 
 clean:
 	-$(RM) $(OBJECTS) $(TARGET) $(DEPENDS)
+
+# Include generated dependency files - must be at the bottom of the makefile
+ -include $(DEPENDS)
