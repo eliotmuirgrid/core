@@ -614,7 +614,6 @@ static void persist(PersistInfo *pi)
 
 void pluto_persist(lua_State *L, lua_Chunkwriter writer, void *ud)
 {
-	printf("FUNC pluto_persist");
 	PersistInfo pi;
 	
 	pi.counter = 0;

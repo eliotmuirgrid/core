@@ -8,6 +8,8 @@ extern "C" {
 #include <stdlib.h>
 
 #include <BAS/BASstring.h>
+#include <BAS/BAStrace.h>
+BAS_TRACE_INIT;
 
 extern "C" int print(lua_State* L){
   const char* pString = lua_tostring (L, -1);
@@ -17,13 +19,16 @@ extern "C" int print(lua_State* L){
 
 
 int APPwriter(lua_State *L, const void* p, size_t sz, void* ud){
+  BAS_FUNCTION(APPwriter);
   BASstring String((char*)p, (int)sz);
-  printf("Chunk %lu: %s\n", sz, String.data());
+  BAS_VAR2(sz, String.data());
   return sz;
 }
 
 
 int main(int argc, char *argv[]) {
+  BASsetTracePattern("*");
+  BAS_FUNCTION(main);
   // Open lua
   lua_State *L = lua_open();
   // Load the libraries
@@ -34,11 +39,13 @@ int main(int argc, char *argv[]) {
 
   // Execution of a lua string
   lua_dostring(L, "function Logo(X) return 'Life'..X end");
-  lua_dostring(L, "local X = 42; print(Logo(' is interesting'));");
+  //lua_dostring(L, "local X = 42; print(Logo(' is interesting'));");
   lua_newtable(L);
   lua_getglobal(L, "Logo");
+  BAS_TRC("Entering pluto_persist");
   pluto_persist(L, APPwriter, NULL);
-  printf("***DONE\n");
+  BAS_TRC("Exiting pluto persist");
+
   
 // Close lua
   
