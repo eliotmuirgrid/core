@@ -20,7 +20,7 @@ BAS_TRACE_INIT;
 #include <stdio.h>
 
 int main(){
-   //BASsetTracePattern("*");
+   BASsetTracePattern("BAShex");
    BASout << "Hello world..." << newline;
    BASsinkStandardOut Sink;
    BASstring Me = "Hello world...";
