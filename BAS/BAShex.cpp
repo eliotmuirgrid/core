@@ -73,6 +73,8 @@ void BAShex(int Size, const void* pRawData, BASsink* pSink, int Indent){
       } else {
          pSink->write(Buffer, 33);
       }
-      pSink->write("\n", 1);
+      if (j+8 < Size){
+         pSink->write("\n", 1);
+      }
    }
 }
