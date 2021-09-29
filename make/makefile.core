@@ -33,10 +33,10 @@ endif
 
 all:	$(TARGET)
 
-test.exe:	$(OBJECTS) # Windows link command
+test.exe:	$(OBJECTS) 
 	cl $(OBJECTS) /nologo /link /out:test.exe
 
-test:	$(OBJECTS) # Posix link command
+test:	$(OBJECTS) $(SOURCES)
 	$(CC) $(OBJECTS) -lm -o test
 
 info:

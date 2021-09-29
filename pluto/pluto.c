@@ -16,20 +16,20 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "lua/lua.h"
+#include "lua5032/lua.h"
 #include "pluto.h"
 
-#include "lua/lapi.h"
-#include "lua/ldo.h"
-#include "lua/lfunc.h"
-#include "lua/lgc.h"
-#include "lua/llimits.h"
-#include "lua/lmem.h"
-#include "lua/lobject.h"
-#include "lua/lopcodes.h"
-#include "lua/lstate.h"
-#include "lua/lstring.h"
-#include "lua/lauxlib.h"
+#include "lua5032/lapi.h"
+#include "lua5032/ldo.h"
+#include "lua5032/lfunc.h"
+#include "lua5032/lgc.h"
+#include "lua5032/llimits.h"
+#include "lua5032/lmem.h"
+#include "lua5032/lobject.h"
+#include "lua5032/lopcodes.h"
+#include "lua5032/lstate.h"
+#include "lua5032/lstring.h"
+#include "lua5032/lauxlib.h"
 
 
 
