@@ -26,7 +26,9 @@ endif
 	cl -I../ -c /nologo $< /Fo$@
 
 # Posix build command
-%.o:	%.c*
+%.o:	%.c
+	$(CC) -MMD -I../ -c $< -o $@
+%.o:	%.cpp
 	$(CC) -MMD -I../ -c $< -o $@
 
 all:	$(TARGET)
