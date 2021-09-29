@@ -79,6 +79,7 @@ static void persist(PersistInfo *pi);
 static StkId getobject(lua_State *L, int stackpos)
 {
 	BAS_FUNCTION(getobject);
+	BAS_VAR(stackpos);
 	if(stackpos > 0) {
 		lua_assert(L->base+stackpos-1 < L->top);
 		return L->base+stackpos-1;
@@ -290,6 +291,7 @@ static void persistfunction(PersistInfo *pi)
 					/* perms reftbl ... func */
 	Closure *cl = clvalue(getobject(pi->L, -1));
 	if(cl->c.isC) {
+		BAS_TRC("Persisting C function");
 		/* It's a C function. For now, we aren't going to allow
 		 * persistence of C closures, even if the "C proto" is
 		 * already in the permanents table. */
@@ -304,6 +306,7 @@ static void persistfunction(PersistInfo *pi)
 		}
 		/* Persist prototype */
 		{
+			BAS_TRC("* Persisting prototype *");
 			pushproto(pi->L, cl->l.p);
 					/* perms reftbl ... func proto */
 			persist(pi);
@@ -313,6 +316,7 @@ static void persistfunction(PersistInfo *pi)
 		/* Persist upvalue values (not the upvalue objects
 		 * themselves) */
 		{
+			BAS_TRC("* Persisting upvalues *");
 			int i;
 			for(i=0; i<cl->l.p->nups; i++) {
 					/* perms reftbl ... func */
@@ -326,6 +330,7 @@ static void persistfunction(PersistInfo *pi)
 		}
 		/* Persist function environment */
 		{
+			BAS_TRC("* Persisting function environment *");
 			lua_getfenv(pi->L, -1);
 					/* perms reftbl ... func fenv */
 			if(lua_equal(pi->L, -1, LUA_GLOBALSINDEX)) {
@@ -351,6 +356,7 @@ static void persistupval(PersistInfo *pi)
 	UpVal *uv = toupval(pi->L, -1);
 
 	/* If this assertion fails, the upvalue is not "closed". */
+	if(uv->v != &uv->value) BAS_TRC("The upvalue is not closed");
 	lua_assert(uv->v == &uv->value);
 
 	luaA_pushobject(pi->L, uv->v);
@@ -363,6 +369,8 @@ static void persistupval(PersistInfo *pi)
 static void persistproto(PersistInfo *pi)
 {
 	BAS_FUNCTION(persistproto);
+	BAS_VAR(pi->counter);
+
 					/* perms reftbl ... proto */
 	Proto *p = toproto(pi->L, -1);
 
@@ -495,6 +503,7 @@ static void persistnumber(PersistInfo *pi)
 static void persiststring(PersistInfo *pi)
 {
 	BAS_FUNCTION(persiststring);
+	BAS_VAR(lua_tostring(pi->L, -1));
 	int length = lua_strlen(pi->L, -1);
 	pi->writer(pi->L, &length, sizeof(int), pi->ud);
 	pi->writer(pi->L, lua_tostring(pi->L, -1), length, pi->ud);
