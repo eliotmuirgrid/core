@@ -22,7 +22,7 @@ int APPwriter(lua_State *L, const void* p, size_t sz, void* ud){
   BAS_FUNCTION(APPwriter);
   BASstring String((char*)p, (int)sz);
   BAS_VAR2(sz, String.data());
-  BAS_HEX(p, sz);
+  BAS_HEX("CHUNK:", p, sz);
   return sz;
 }
 
@@ -51,6 +51,7 @@ int main(int argc, char *argv[]) {
 // Close lua
   
   lua_close (L);
+  BASout << newline;
 
   return 0;
 }

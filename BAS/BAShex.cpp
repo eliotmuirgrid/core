@@ -39,8 +39,11 @@ static void BASpadd(char** pBuffer, int Size){
    }
 }
 
+#define G "                                                      "
+static const char* s_pBAShexIndent = G G G G G G G G G G G G G G G G G G G G G G G G G G G G G G;
+
 // Not the most beautiful implementation
-void BAShex(int Size, const void* pRawData, BASsink* pSink){
+void BAShex(int Size, const void* pRawData, BASsink* pSink, int Indent){
    BAS_FUNCTION(BAShex);
    const char* pData = (const char*)pRawData;
    BAS_VAR2(Size, pData);
@@ -57,13 +60,14 @@ void BAShex(int Size, const void* pRawData, BASsink* pSink){
       }
       BAS_VAR(pBuffer);
       int MaxHalf = BAS_MIN(j+4, Size);
-      for (int i=j; i < j+4; i++){
+      for (int i=j; i < MaxHalf; i++){
          BASwriteChar(pData[i], &pBuffer);
       }
       *(pBuffer++) = ' ';
       for (int i=j+4; i < Max; i++){
          BASwriteChar(pData[i], &pBuffer);
       }
+      pSink->write(s_pBAShexIndent, Indent);
       if (j+8 > Size) {
          pSink->write(Buffer, 25 + Size-j);
       } else {
