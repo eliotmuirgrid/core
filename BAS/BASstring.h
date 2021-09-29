@@ -8,6 +8,8 @@
 // Core string class.  Not reference counted.
 //-------------------------------------------------------
 
+class BASstream;
+
 class BASstring{
 public:
    BASstring();
@@ -62,5 +64,9 @@ unsigned int BASupperPowerOfTwo(unsigned int v);
 
 BASstring operator+(const BASstring& Lhs, const char*     pRhs);
 BASstring operator+(const BASstring& Lhs, const BASstring& Rhs);
+
+
+BASstream& operator<<(BASstream& Stream, const BASstring& String);
+
 
 #endif

@@ -7,10 +7,12 @@
 //-------------------------------------------------------
 
 #include <BAS/BASstring.h>
+#include <BAS/BASstream.h>
 
 #include <stdio.h>
 
 int main(){
+   BASout << "ggg" << newline;
    BASstring String;
    String = "Hello world!";
   

@@ -6,6 +6,8 @@
 // Implementation
 //-------------------------------------------------------
 #include "BASstring.h"
+#include "BASstream.h"
+#include "BASsink.h"
 
 #include <string.h>
 
@@ -44,7 +46,7 @@ BASstring& BASstring::operator=(const BASstring& Orig){
 BASstring::~BASstring(){
    if (m_Capacity >= sizeof(m_pData.ShortBuffer)){
       delete []m_pData.pHeap;
-   }
+   } 
 }
 
 BASstring& BASstring::append(const char* pData){
@@ -60,7 +62,6 @@ BASstring& BASstring::append(const char* pData, int AddSize){
    data()[m_Size] = 0;  // NULL terminate
    return *this;   
 }
-
 
 // Short --> Short
 // Short --> Long
@@ -117,11 +118,13 @@ bool BASstring::operator==(const BASstring& Rhs) const{
    return memcmp(data(), Rhs.data(), size()) == 0; 
 }
 
-
-
 BASstring operator+(const BASstring& Lhs, const char*   pRhs  ) { BASstring X(Lhs); X+= pRhs; return X;}
 BASstring operator+(const BASstring& Lhs, const BASstring& Rhs) { BASstring X(Lhs); X+= Rhs; return X;}
 
+BASstream& operator<<(BASstream& Stream, const BASstring& String){
+   Stream.sink()->write(String.data(), String.size());
+   return Stream;
+}
 
 unsigned int BASupperPowerOfTwo(unsigned int v){
    v--;
