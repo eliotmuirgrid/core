@@ -30,6 +30,24 @@ int APPwriter(lua_State *L, const void* p, size_t sz, void* ud){
 }
 
 
+const char* APPread(lua_State* L, void* ud, size_t* pSize){
+   BAS_FUNCTION(APPread);
+   BAS_VAR2(ud, *pSize);
+   BASstring* pString = (BASstring*)ud;
+   *pSize = pString->size();
+   BAS_VAR(*pSize);
+   return pString->data(); 
+}
+
+void APPrestoreLua(const BASstring& Data){
+   lua_State *L = lua_open();
+   lua_pushcfunction(L, print);
+   lua_setglobal(L, "print");
+   pluto_unpersist(L, APPread, (void*)&Data);    
+   lua_close(L);
+}
+
+
 int main(int argc, char *argv[]) {
   BASsetTracePattern("pluto* main");
   BAS_FUNCTION(main);
@@ -54,11 +72,11 @@ int main(int argc, char *argv[]) {
   pluto_persist(L, APPwriter, &Sink);
   BAS_VAR(Data.size());
   BAS_TRC("Exiting pluto persist");
-
-  
 // Close lua
-  
   lua_close (L);
+
+  APPrestoreLua(Data);
+
   BASout << newline;
 
   return 0;
