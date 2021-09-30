@@ -5,13 +5,13 @@
 // 
 // Mutex wrapper - windows and posix implementations
 //-------------------------------------------------------
+#include "BASmutex.h"
 
 #ifndef _WIN32
 
 #include <pthread.h>
 #include <stdlib.h>
 
-#include "BASmutex.h"
 
 #define m_HANDLE (pthread_mutex_t*)&m_Handle
 
