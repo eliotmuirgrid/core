@@ -7,6 +7,7 @@ extern "C" {
 
 #include <stdlib.h>
 
+#include <BAS/BASargParser.h>
 #include <BAS/BASsinkString.h>
 #include <BAS/BASstring.h>
 #include <BAS/BAStrace.h>
@@ -50,21 +51,25 @@ void APPrestoreLua(const BASstring& Data){
 }
 
 
-int main(int argc, char *argv[]) {
-  BASsetTracePattern("pluto* main");
-  BAS_FUNCTION(main);
+int main(int argc, const char** argv) {
+   BASargParser Parser;
+   if (!Parser.parse(argc, argv)){
+      Parser.showUsage(BASout);
+      return 0;
+   }
+   BAS_FUNCTION(main);
   // Open lua
-  lua_State *L = lua_open();
+   lua_State *L = lua_open();
   // Load the libraries
   //luaL_openlibs(L);
 
-  lua_pushcfunction(L, print);
-  lua_setglobal(L, "print");
+   lua_pushcfunction(L, print);
+   lua_setglobal(L, "print");
 
   // Execution of a lua string
   //lua_dostring(L, "function Logo(X) print('Hello') end");
-  lua_dostring(L, "print('Hello');");
-  BAS_VAR(lua_gettop(L));
+   lua_dostring(L, "print('Hello');");
+   BAS_VAR(lua_gettop(L));
   //lua_newtable(L);
   //lua_getglobal(L, "Logo");
   //BAS_VAR(lua_gettop(L));
@@ -75,11 +80,11 @@ int main(int argc, char *argv[]) {
   BAS_VAR(Data.size());
   BAS_TRC("Exiting pluto persist");
 // Close lua*/
-  lua_close (L);
+   lua_close (L);
 
   //APPrestoreLua(Data);
 
-  BASout << newline;
+   BASout << newline;
 
-  return 0;
+   return 0;
 }
