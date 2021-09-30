@@ -7,6 +7,7 @@ extern "C" {
 
 #include <stdlib.h>
 
+#include <BAS/BASsinkString.h>
 #include <BAS/BASstring.h>
 #include <BAS/BAStrace.h>
 BAS_TRACE_INIT;
@@ -23,6 +24,8 @@ int APPwriter(lua_State *L, const void* p, size_t sz, void* ud){
   BASstring String((char*)p, (int)sz);
   BAS_VAR2(sz, String.data());
   BAS_HEX("CHUNK:", p, sz);
+  BASsink* pSink = (BASsink*)ud;
+  pSink->write((const char*)p, sz);
   return sz;
 }
 
@@ -41,10 +44,15 @@ int main(int argc, char *argv[]) {
   // Execution of a lua string
   lua_dostring(L, "function Logo(X) return 'Life'..X end");
   //lua_dostring(L, "local X = 42; print(Logo(' is interesting'));");
+  BAS_VAR(lua_gettop(L));
   lua_newtable(L);
   lua_getglobal(L, "Logo");
+  BAS_VAR(lua_gettop(L));
   BAS_TRC("Entering pluto_persist");
-  pluto_persist(L, APPwriter, NULL);
+  BASstring Data;
+  BASsinkString Sink(&Data);
+  pluto_persist(L, APPwriter, &Sink);
+  BAS_VAR(Data.size());
   BAS_TRC("Exiting pluto persist");
 
   
