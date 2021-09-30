@@ -35,10 +35,10 @@ void BASmutex::unlock(){pthread_mutex_unlock(m_HANDLE); }
 
 #define m_HANDLE (CRITICAL_SECTION*)&m_Handle
 
-BASmutex::BASmutex() { ::InitializeCriticalSection(m_HANDLE); }
-BASmutex::~BASmutex(){ ::DeleteCriticalSection(m_HANDLE);     }
-void BASmutex::lock(){ ::EnterCriticalSection(m_HANDLE);      }  
-void unlock()        { ::LeaveCriticalSection(m_HANDLE);      }
+BASmutex::BASmutex()   { ::InitializeCriticalSection(m_HANDLE); }
+BASmutex::~BASmutex()  { ::DeleteCriticalSection(m_HANDLE);     }
+void BASmutex::lock()  { ::EnterCriticalSection(m_HANDLE);      }  
+void BASmutex::unlock(){ ::LeaveCriticalSection(m_HANDLE);      }
 
 #endif
 
