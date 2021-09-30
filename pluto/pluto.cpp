@@ -515,7 +515,9 @@ static void persist(PersistInfo *pi)
 					/* perms reftbl ... obj ref */
 		int zero = 0;
 		int ref = (int)(size_t)lua_touserdata(pi->L, -1);
+		BAS_TRC("About to call writer");
 		pi->writer(pi->L, &zero, sizeof(int), pi->ud);
+		BAS_TRC("About to call writer");
 		pi->writer(pi->L, &ref, sizeof(int), pi->ud);
 		lua_pop(pi->L, 1);
 					/* perms reftbl ... obj ref */
