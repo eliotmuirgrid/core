@@ -1,7 +1,5 @@
 SEARCH  := $(foreach dir, $(DIRS),../$(dir)/*.cpp ../$(dir)/*.c) *.c *.cpp  
-HEADERS := $(foreach dir, $(DIRS),../$(dir)/*.h) *.h
 SOURCES := $(wildcard $(SEARCH))
-HEADERS := $(wildcard $(HEADERS))
 OBJECTS := $(patsubst %.cpp,%.o,$(SOURCES))
 OBJECTS := $(patsubst %.c,%.o,$(OBJECTS))
 DEPENDS := $(subst .o,.d, $(OBJECTS))
@@ -25,7 +23,7 @@ all:	$(TARGET)
 test.exe:	$(OBJECTS) 
 	cl $(OBJECTS) /nologo /link /out:test.exe
 
-test:	$(OBJECTS) $(SOURCES) $(HEADERS)
+test:	$(OBJECTS) $(SOURCES)
 	$(CC) $(OBJECTS) -lm -lstdc++ -o test
 
 # Windows build command
@@ -47,7 +45,6 @@ info:
 	@echo $(CC)
 	@echo $(SEARCH)
 	@echo $(SOURCES)
-	@echo $(HEADERS)
 	@echo $(OBJECTS)
 	@echo $(DEPENDS)
 
