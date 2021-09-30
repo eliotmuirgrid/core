@@ -33,7 +33,7 @@ void BASmutex::unlock(){pthread_mutex_unlock(m_HANDLE); }
 #define LEAN_AND_MEAN
 #include <windows.h>
 
-#define m_HANDLE (CRITICAL_SECTION*)&m_Handle;
+#define m_HANDLE (CRITICAL_SECTION*)&m_Handle
 
 BASmutex::BASmutex() { ::InitializeCriticalSection(m_HANDLE); }
 BASmutex::~BASmutex(){ ::DeleteCriticalSection(m_HANDLE);     }
