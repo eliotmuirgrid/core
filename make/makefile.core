@@ -1,18 +1,16 @@
 SEARCH  := $(foreach dir, $(DIRS),../$(dir)/*.cpp ../$(dir)/*.c) *.c *.cpp  
-HEADERS := $(foreach dir, $(DIRS),../$(dir)/*.h) *.h
 SOURCES := $(wildcard $(SEARCH))
-HEADERS := $(wildcard $(HEADERS))
 OBJECTS := $(patsubst %.cpp,%.o,$(SOURCES))
 OBJECTS := $(patsubst %.c,%.o,$(OBJECTS))
+DEPENDS := $(subst .o,.d, $(OBJECTS))
 TARGET=test
 
 # ComSpec is just defined for Windows
 ifdef ComSpec
 	RM=del /F /Q
-	DEPENDS := $(subst .o,.d, $(OBJECTS))
 	OBJECTS := $(subst /,\, $(OBJECTS))
 	OBJECTS := $(subst .o,.obj, $(OBJECTS))
-   TARGET := test.exe
+	TARGET := test.exe
 else # We use ccache on our posix compiles if it is present.
    CCACHE := $(shell command -v ccache  2> /dev/null)
    ifdef CCACHE
@@ -20,34 +18,36 @@ else # We use ccache on our posix compiles if it is present.
    endif
 endif
 
-# Windows build command
-%.obj:	%.c*
-	cl -I../ -c /nologo $< /Fo$@
-
-# Posix build command
-%.o:	%.c
-	$(CC) -MMD -I../ -c $< -o $@
-%.o:	%.cpp
-	$(CC) -MMD -I../ -std=c++11 -c $< -o $@
-
 all:	$(TARGET)
 
 test.exe:	$(OBJECTS) 
 	cl $(OBJECTS) /nologo /link /out:test.exe
 
-test:	$(OBJECTS) $(SOURCES) $(HEADERS)
+test:	$(OBJECTS) $(SOURCES)
 	$(CC) $(OBJECTS) -lm -lstdc++ -o test
+
+# Windows build command
+%.obj:	%.cpp
+	cl -I../ -c /nologo $< /Fo$@
+%.obj:	%.c
+	cl -I../ -c /nologo $< /Fo$@
+
+# Posix build command
+%.o:	%.cpp
+	$(CC) -MMD -I../ -std=c++11 -c $< -o $@
+%.o:	%.c
+	$(CC) -MMD -c $< -o $@
+
+# Include generated dependency files
+-include $(DEPENDS)
 
 info:
 	@echo $(CC)
 	@echo $(SEARCH)
 	@echo $(SOURCES)
-	@echo $(HEADERS)
 	@echo $(OBJECTS)
 	@echo $(DEPENDS)
 
 clean:
 	-$(RM) $(OBJECTS) $(TARGET) $(DEPENDS)
 
-# Include generated dependency files - must be at the bottom of the makefile
- -include $(DEPENDS)
