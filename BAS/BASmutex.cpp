@@ -5,13 +5,13 @@
 // 
 // Mutex wrapper - windows and posix implementations
 //-------------------------------------------------------
+#include "BASmutex.h"
 
-#ifndef WIN32
+#ifndef _WIN32
 
 #include <pthread.h>
 #include <stdlib.h>
 
-#include "BASmutex.h"
 
 #define m_HANDLE (pthread_mutex_t*)&m_Handle
 
@@ -33,12 +33,12 @@ void BASmutex::unlock(){pthread_mutex_unlock(m_HANDLE); }
 #define LEAN_AND_MEAN
 #include <windows.h>
 
-#define m_HANDLE (CRITICAL_SECTION*)&m_Handle;
+#define m_HANDLE (CRITICAL_SECTION*)&m_Handle
 
-BASmutex::BASmutex() { ::InitializeCriticalSection(m_HANDLE); }
-BASmutex::~BASmutex(){ ::DeleteCriticalSection(m_HANDLE);     }
-void BASmutex::lock(){ ::EnterCriticalSection(m_HANDLE);      }  
-void unlock()        { ::LeaveCriticalSection(m_HANDLE);      }
+BASmutex::BASmutex()   { ::InitializeCriticalSection(m_HANDLE); }
+BASmutex::~BASmutex()  { ::DeleteCriticalSection(m_HANDLE);     }
+void BASmutex::lock()  { ::EnterCriticalSection(m_HANDLE);      }  
+void BASmutex::unlock(){ ::LeaveCriticalSection(m_HANDLE);      }
 
 #endif
 
