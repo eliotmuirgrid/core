@@ -4,6 +4,8 @@
 
 #include <stdlib.h>
 
+#include <SLUA/SLUApersist.h>
+
 #include <BAS/BASargParser.h>
 #include <BAS/BASsinkString.h>
 #include <BAS/BASstring.h>
@@ -45,8 +47,11 @@ int main(int argc, const char** argv) {
    // Execution of a lua string
    luaL_dostring(L, "A = 'Hello world!';");
    luaL_dostring(L, "print(A);");
-   
+
+   BASstring Dump;   
+   SLUApersist(L, &Dump);
    BAS_TRC("Closing Lua");
+
    lua_close (L);
    BASout << newline;
    return 0;
