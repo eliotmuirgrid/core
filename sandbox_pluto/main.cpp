@@ -14,9 +14,19 @@ extern "C" {
 BAS_TRACE_INIT;
 
 extern "C" int print(lua_State* L){
-  const char* pString = lua_tostring (L, -1);
-  BASout << pString << newline << flush;
-  return 0;
+   BAS_FUNCTION(print);
+   BAS_VAR(lua_gettop(L));
+   if (lua_isnil(L, -1)){
+      BASout << "<nil>" << newline << flush;
+   } 
+   else if (lua_isstring(L, -1)){
+      const char* pString = lua_tostring (L, -1);
+      BAS_VAR(pString);
+      BASout << pString << newline << flush;
+   } else {
+      BASout << "Unsupported type." << newline << flush;
+   }
+   return 0;
 }
 
 
@@ -41,12 +51,16 @@ const char* APPread(lua_State* L, void* ud, size_t* pSize){
 }
 
 void APPrestoreLua(const BASstring& Data){
+   BAS_FUNCTION(APPrestoreLua);
    lua_State *L = lua_open();
    lua_pushcfunction(L, print);
    lua_setglobal(L, "print");
    lua_newtable(L);  // create table of 'permanent objects'
-   pluto_unpersist(L, APPread, (void*)&Data);    
-   lua_dostring(L, "print(Logo(' is reborn'));");
+   BAS_TRC("About to unpersist.");
+   pluto_unpersist(L, APPread, (void*)&Data);
+   BAS_TRC("About to print.");   
+   lua_dostring(L, "print(A);");
+   BAS_TRC("Done!");
    lua_close(L);
 }
 
@@ -58,33 +72,30 @@ int main(int argc, const char** argv) {
       return 0;
    }
    BAS_FUNCTION(main);
-  // Open lua
+   // Open lua
    lua_State *L = lua_open();
-  // Load the libraries
-  //luaL_openlibs(L);
+   // Load the libraries
+   //luaL_openlibs(L);
 
+   BAS_TRC("Register trace statement.");
    lua_pushcfunction(L, print);
    lua_setglobal(L, "print");
-
-  // Execution of a lua string
-  //lua_dostring(L, "function Logo(X) print('Hello') end");
-   lua_dostring(L, "print('Hello');");
+   BAS_TRC("Set variable.");
+   // Execution of a lua string
+   lua_dostring(L, "A = 'Hello world!';");
+   lua_dostring(L, "print(A);");
    BAS_VAR(lua_gettop(L));
-  //lua_newtable(L);
-  //lua_getglobal(L, "Logo");
-  //BAS_VAR(lua_gettop(L));
-  /*BAS_TRC("Entering pluto_persist");
-  BASstring Data;
-  BASsinkString Sink(&Data);
-  pluto_persist(L, APPwriter, &Sink);
-  BAS_VAR(Data.size());
-  BAS_TRC("Exiting pluto persist");
-// Close lua*/
+   lua_newtable(L);
+   lua_getglobal(L, "A");
+   BAS_VAR(lua_gettop(L));
+   BAS_TRC("Entering pluto_persist");
+   BASstring Data;
+   BASsinkString Sink(&Data);
+   pluto_persist(L, APPwriter, &Sink);
+   BAS_VAR(Data.size());
+   BAS_TRC("Exiting pluto persist and closing Lua");
    lua_close (L);
-
-  //APPrestoreLua(Data);
-
+   APPrestoreLua(Data);
    BASout << newline;
-
    return 0;
 }
