@@ -6,7 +6,7 @@
 // Mutex wrapper - windows and posix implementations
 //-------------------------------------------------------
 
-#ifndef WIN32
+#ifndef _WIN32
 
 #include <pthread.h>
 #include <stdlib.h>
