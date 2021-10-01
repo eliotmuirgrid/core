@@ -13,11 +13,13 @@
    #define BASfsync _commit
    #define BASwrite _write
    #define BASopen _open
+   #define BASseek _lseek64
 #else
    #include <unistd.h>
    #define BASfsync ::fsync
    #define BASwrite ::write
    #define BASopen  ::open
+   #define BASseek  ::lseek
 #endif
 
 #endif

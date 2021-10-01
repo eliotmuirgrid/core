@@ -84,6 +84,13 @@ BASstream& operator<<(BASstream& Stream, double Number){
    return Stream;
 }
 
+BASstream& operator<<(BASstream& Stream, BASint64 Number){
+   char Buffer[32];
+   int Size = sprintf(Buffer, "%llu", Number);
+   Stream.sink()->write(Buffer, Size);
+   return Stream;
+}
+
 
 BASstream& operator<<(BASstream& Stream, const void* pPointer){
    char Buffer[32];

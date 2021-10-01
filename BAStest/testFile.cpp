@@ -29,10 +29,7 @@ static void testReadWrite(){
    Destination.open("dummy.txt", BASfile::Read);
    BAS_TRC("Open");
    BASstring Out;
-   Out.setCapacity(Data.size()+10);
-   BAS_TRC("Set capacity");
-   int AmountRead = Destination.read(Out.data(), Data.size());
-   Out.setSize(AmountRead);
+   int AmountRead = Destination.read(&Out);
    BAS_VAR(Data);
    BAS_VAR(Out);
    BAS_TRC("Test equality");

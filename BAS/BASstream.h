@@ -10,6 +10,8 @@
 
 class BASsink;
 
+#include "BAStypes.h"
+
 class BASstream{
 public:
    BASstream(BASsink& Sink);  // does not take ownership
@@ -31,6 +33,7 @@ BASstream& operator<<(BASstream& Stream, const void* pObject);
 BASstream& operator<<(BASstream& Stream, char Character);
 BASstream& operator<<(BASstream& Stream, unsigned int Number);
 BASstream& operator<<(BASstream& Stream, unsigned long Number);
+BASstream& operator<<(BASstream& Stream, BASint64 Number);
 BASstream& operator<<(BASstream& Stream, double Number);
 
 

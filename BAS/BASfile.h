@@ -10,6 +10,7 @@
 
 #include "BASsink.h"
 #include "BASstring.h"
+#include "BAStypes.h"
 
 class BASstring;
 
@@ -26,11 +27,17 @@ public:
 
    int read(void* pBuffer, int SizeOfBuffer);
 
+   int read(BASstring* pBuffer);
+
    void close();
 
    virtual void flush();
 
    int lastError() const;
+
+   BASint64 position();
+
+   BASint64 size();
 private:
    int m_FileHandle;
    int m_LastError;
