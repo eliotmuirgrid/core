@@ -20,7 +20,7 @@ public:
    BASsinkString(BASstring* pString) : m_pString(pString) {}
    virtual ~BASsinkString() {}
 
-   virtual void write(const char* pData, int Size) { m_pString->append(pData, Size); }
+   virtual int write(const char* pData, int Size) { m_pString->append(pData, Size); return Size; }
    virtual void flush() {}
 private:
    BASstring* m_pString;

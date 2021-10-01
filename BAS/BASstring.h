@@ -19,6 +19,7 @@ public:
    ~BASstring();
 
    int size() const { return m_Size; }
+   void setSize(int NewSize) { m_Size = NewSize; }  // no checking - be careful
 
    int capacity() const { return m_Capacity; }
    void setCapacity(int NewCapacity);
@@ -38,6 +39,7 @@ public:
    bool operator!=(const char* pData) const;
 
    bool operator==(const BASstring& Rhs) const;
+   bool operator!=(const BASstring& Rhs) const;
 
    int compare(const BASstring& Lhs) const;
 private:

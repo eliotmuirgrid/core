@@ -13,7 +13,7 @@ public:
     BASsink(){}
     virtual ~BASsink() {}
 
-    virtual void write(const char* pData, int Size)=0; 
+    virtual int write(const char* pData, int Size)=0; 
     virtual void flush()=0;
 };
 

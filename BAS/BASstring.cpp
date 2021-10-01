@@ -118,6 +118,10 @@ bool BASstring::operator==(const BASstring& Rhs) const{
    return memcmp(data(), Rhs.data(), size()) == 0; 
 }
 
+bool BASstring::operator!=(const BASstring& Rhs) const{
+   return !operator==(Rhs);
+}
+
 BASstring operator+(const BASstring& Lhs, const char*   pRhs  ) { BASstring X(Lhs); X+= pRhs; return X;}
 BASstring operator+(const BASstring& Lhs, const BASstring& Rhs) { BASstring X(Lhs); X+= Rhs; return X;}
 
