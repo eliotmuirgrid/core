@@ -21,7 +21,16 @@ BAS_TRACE_INIT;
 #include <stdio.h>
 #include <time.h>
 #include <string.h>
+
+
+#ifdef _WIN32
+#include <windows.h>
+long BASthreadId(){ return (long)GetCurrentThreadId(); }
+#else
 #include <pthread.h>
+long BASthreadId(){ return (long)pthread_self(); }
+#endif
+
 
 BASmutex s_LogMutex;
 
@@ -36,10 +45,6 @@ void  BAStimeStampOld() {
    char s[64];
    strftime(s, sizeof(s), "T %H:%M:%S ", tm);
    BAStrace << s;
-}
-
-long BASthreadId(){
-   return (long)pthread_self();
 }
 
 void BAStimeStamp(const char* pModule){

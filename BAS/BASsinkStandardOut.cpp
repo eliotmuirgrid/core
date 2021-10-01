@@ -5,8 +5,12 @@
 //-------------------------------------------------------
 
 #include "BASsinkStandardOut.h"
+#include <io.h>
+#include <stdio.h>
 
-#include <unistd.h>
+#ifdef _WIN32
+#define fsync _commit
+#endif
 
 BASsinkStandardOut::BASsinkStandardOut(){
 
@@ -17,9 +21,9 @@ BASsinkStandardOut::~BASsinkStandardOut(){
 }
 
 void BASsinkStandardOut::write(const char* pData, int Size){
-   ::write(STDOUT_FILENO, pData, Size);
+   ::write(1, pData, Size);
 } 
 
 void BASsinkStandardOut::flush(){
-   fsync(STDOUT_FILENO);
+   fsync(1);
 }
