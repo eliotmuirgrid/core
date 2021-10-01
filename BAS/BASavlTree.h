@@ -54,13 +54,15 @@ public:
 
    bool operator==(const BASavlIterator& Rhs) const { return root() == Rhs.root(); }
    bool operator!=(const BASavlIterator& Rhs) const { return root() != Rhs.root(); }
+
+   inline BASavlNode* root() { return m_Stack[m_StackPos];}
+   inline const BASavlNode* root() const { return m_Stack[m_StackPos];}
 private:
    void pop();
    void goRight();
    bool downLeft();
    bool upRight();
-   inline BASavlNode* root() { return m_Stack[m_StackPos];}
-   inline const BASavlNode* root() const { return m_Stack[m_StackPos];}
+
    
    inline BASavlNode* parent() { return m_Stack[m_StackPos-1];}
 

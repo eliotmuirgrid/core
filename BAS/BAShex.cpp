@@ -22,7 +22,6 @@ static void BASwriteChar(char Char, char** pBuffer){
 
 static void BASwriteHex(char Char, char** pBuffer){
    BAS_FUNCTION(BASwriteHex);
-   BAS_VAR((size_t)*pBuffer);
    int High = (Char & 0xF0) >> 4;
    int Low = Char & 0xF;
    BAS_VAR2(High, Low);
@@ -48,7 +47,6 @@ void BAShex(int Size, const void* pRawData, BASsink* pSink, int Indent){
    const char* pData = (const char*)pRawData;
    BAS_VAR2(Size, pData);
    char Buffer[34];
-   BAS_VAR((size_t)Buffer);
    for (int j=0; j < Size; j+=8){
       char* pBuffer = Buffer;
       int Max = BAS_MIN(j+8, Size);
