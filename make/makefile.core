@@ -1,4 +1,5 @@
 SEARCH  := $(foreach dir, $(DIRS),../$(dir)/*.cpp ../$(dir)/*.c) *.c *.cpp  
+DLIST   := $(foreach dir, $(DIRS),../$(dir)/*.obj ../$(dir)/*.o ../$(dir)/*.d) *.obj *.o *.d
 SOURCES := $(wildcard $(SEARCH))
 OBJECTS := $(patsubst %.cpp,%.o,$(SOURCES))
 OBJECTS := $(patsubst %.c,%.o,$(OBJECTS))
@@ -47,7 +48,8 @@ info:
 	@echo $(SOURCES)
 	@echo $(OBJECTS)
 	@echo $(DEPENDS)
+	@echo $(DLIST)
 
 clean:
-	-$(RM) $(OBJECTS) $(TARGET) $(DEPENDS)
+	-$(RM) $(TARGET) $(DLIST)
 
