@@ -5,7 +5,6 @@
 //-------------------------------------------------------
 
 #include "BASsinkStandardOut.h"
-#include <io.h>
 #include <stdio.h>
 
 #ifdef _WIN32
@@ -13,8 +12,9 @@
    #define BASfsync _commit
    #define BASwrite _write
 #else
-   #define BASfsync fsync
-   #define BASwrite write
+   #include <unistd.h>
+   #define BASfsync ::fsync
+   #define BASwrite ::write
 #endif
 
 void BASsinkStandardOut::write(const char* pData, int Size){
