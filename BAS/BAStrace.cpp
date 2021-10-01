@@ -18,8 +18,6 @@ BAS_TRACE_INIT;
 
 #include <inttypes.h>
 #include <math.h>
-#include <stdio.h>
-#include <time.h>
 #include <string.h>
 
 
