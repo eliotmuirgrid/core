@@ -12,8 +12,8 @@
 
 class BASsinkStandardOut : public BASsink{
 public:
-   BASsinkStandardOut();
-   virtual ~BASsinkStandardOut();
+   BASsinkStandardOut(){}
+   virtual ~BASsinkStandardOut(){}
 
    virtual void write(const char* pData, int Size); 
    virtual void flush();
