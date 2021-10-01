@@ -28,17 +28,19 @@ private:
 };
 
 #define TEST_EQUAL(LHS,RHS) { if ((LHS) != (RHS)) {\
-      BASsinkString StringSink;\
+      BASstring String;\
+      BASsinkString StringSink(&String);\
       BASstream ErrStream(StringSink);\
       ErrStream  << "Expected: " #LHS << " = " << #RHS << newline << "Actual: " << (LHS);\
-      throw BASerror(StringSink.string(), 0);\
+      throw BASerror(String, 0);\
    }}
 
 #define TEST_NOT_EQUAL(LHS,RHS) { if ((LHS) == (RHS)) {\
-      BASsinkString StringSink;\
+      BASstring String;\
+      BASsinkString StringSink(&String);\
       BASstream ErrStream(StringSink);\
       ErrStream  << "Expected: " #LHS << " != " << #RHS;\
-      throw BASerror(StringSink.string(), 0);\
+      throw BASerror(String, 0);\
    }}
 
 
