@@ -12,6 +12,7 @@ BAS_TRACE_INIT;
 #include "BASsinkStandardOut.h"
 #include "BASglob.h"
 #include "BAShex.h"
+#include "BAStimestamp.h"
 
 #include <time.h>
 #include <stdio.h>  // for printf
@@ -46,23 +47,13 @@ void  BAStimeStampOld() {
 }
 
 void BAStimeStamp(const char* pModule){
-   int            ms; // Milliseconds
-   time_t          t;  // Seconds
-   struct timespec spec;
-
-   clock_gettime(CLOCK_REALTIME, &spec);
-
-   t  = spec.tv_sec;
-   ms = round(spec.tv_nsec / 1.0e6); // Convert nanoseconds to milliseconds
-   if (ms > 999) {
-       t++;
-       ms = 0;
-   }
-   struct tm* tm = localtime(&t);
+   BAStimestamp Time = BAScurrentTime();
+   struct tm* tm = localtime(&Time.Seconds);
    char s[64];
    strftime(s, sizeof(s), "\nT %H:%M:%S", tm);  // prepend newline.
    BAStrace << s << ".";
    char Buffer[3];
+   int ms = Time.Microseconds / 1000;
    sprintf(Buffer,"%03i", ms);  // zero pad the millseconds
    BAStrace << Buffer << " " << (void*)BASthreadId() << " ";
    BAStrace << pModule << " ";  // TODO should output size.

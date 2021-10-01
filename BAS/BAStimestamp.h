@@ -13,7 +13,7 @@
 class BAStimestamp{
 public:
    BASint64 Seconds;
-   BASint64 NanoSeconds;
+   BASint64 Microseconds;
 };
 
 // Think for a POD this is neglible overhead.
