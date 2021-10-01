@@ -9,10 +9,11 @@
 //-------------------------------------------------------
 
 #include "BAStypes.h"
+#include <time.h>
 
 class BAStimestamp{
 public:
-   BASint64 Seconds;
+   time_t Seconds;
    BASint64 Microseconds;
 };
 
