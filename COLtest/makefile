@@ -1,5 +1,0 @@
-DIRS=\
-COL\
-
-include ../make/makefile.core
-
