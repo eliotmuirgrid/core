@@ -9,28 +9,9 @@
 #include <BAS/BAStrace.h>
 BAS_TRACE_INIT;
 
+#include <TEST/TESTapp.h>
 
-#include <BAS/BASstring.h>
-#include <BAS/BASstream.h>
-#include <BAS/BAShex.h>
-#include <BAS/BASsinkStandardOut.h>
-
-
-
-#include <stdio.h>
-
-int main(){
-  // BASsetTracePattern("BAShex");
-
-   BASout << "Hello world..." << newline;
-   BASsinkStandardOut Sink;
-   BASstring Me = "Hello world...!?";
-
-   BAShex(Me.size(), Me.data(), &Sink, 0);
-   Me += "extra";
-   BAShex(Me.size(), Me.data(), &Sink, 0);
-   
-   BAShex(1, "6", &Sink, 0);
-
-   return 0;
+int main(int argc, const char** argv){
+   TESTapp App;
+   return App.run(argc, argv);
 }
