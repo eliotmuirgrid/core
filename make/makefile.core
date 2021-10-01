@@ -10,6 +10,7 @@ TARGET=test
 ifdef ComSpec
 	RM=del /F /Q
 	OBJECTS := $(subst /,\, $(OBJECTS))
+   DLIST := $(subst /,\, $(DLIST))
 	OBJECTS := $(subst .o,.obj, $(OBJECTS))
 	TARGET := test.exe
 else # We use ccache on our posix compiles if it is present.
