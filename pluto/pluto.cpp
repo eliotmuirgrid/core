@@ -733,12 +733,16 @@ static void unpersist(UnpersistInfo *upi);
 static void registerobject(int ref, UnpersistInfo *upi)
 {
 	BAS_FUNCTION(registerobject);
+   BAS_VAR(ref);
 					/* perms reftbl ... obj */
 	lua_pushlightuserdata(upi->L, (void*)(size_t)ref);
+   BAS_TRC("About to push value.");
 					/* perms reftbl ... obj ref */
 	lua_pushvalue(upi->L, -2);
+   BAS_TRC("About to settable.");
 					/* perms reftbl ... obj ref obj */
 	lua_settable(upi->L, 2);
+   BAS_TRC("Done");
 					/* perms reftbl ... obj */
 }
 
@@ -1231,11 +1235,15 @@ static void unpersist(UnpersistInfo *upi)
 					/* perms reftbl ... */
 	int firstTime;
 	int stacksize = lua_gettop(upi->L); /* DEBUG */
+   BAS_VAR(stacksize);
 	luaZ_read(&upi->zio, &firstTime, sizeof(int));
 	if(firstTime) {
+      BAS_TRC("First time.");
 		int ref;
 		int type;
+      BAS_TRC("About to call luaZ_read");
 		luaZ_read(&upi->zio, &ref, sizeof(int));
+      BAS_TRC("Next call...");
 		lua_assert(!inreftable(upi->L, ref));
 		luaZ_read(&upi->zio, &type, sizeof(int));
 #ifdef PLUTO_DEBUG
@@ -1334,6 +1342,7 @@ void pluto_unpersist(lua_State *L, lua_Chunkreader reader, void *ud)
 					/* perms */
 	lua_newtable(L);
 					/* perms reftbl */
+   BAS_TRC("Calling unpersist");
 	unpersist(&upi);
 					/* perms reftbl rootobj */
 	lua_replace(L, 2);
