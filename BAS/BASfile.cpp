@@ -23,88 +23,116 @@ BAS_TRACE_INIT;
 #  define O_BINARY 0
 #endif
 
-BASfile::BASfile() : m_FileHandle(-1) {
-   BAS_METHOD(BASfile::BASfile);
+int BASwriteFile(const BASstring& Name, const BASstring& Content){
+   BAS_FUNCTION(BASwriteFile);
+   int ErrorCode=0;
+   int F = BASfileOpen(Name, BASFrewrite, &ErrorCode);
+   if (F == -1) { return ErrorCode; }
+   int AmountWritten = BASfileWrite(F, Content, &ErrorCode);
+   BAS_VAR(AmountWritten);
+   BASfileClose(F, &ErrorCode);
+   return ErrorCode;
 }
 
-BASfile::~BASfile(){
-   BAS_METHOD(BASfile::~BASfile);
-   close();
+int BASreadFile(const BASstring& Name, BASstring* pContent){
+   BAS_FUNCTION(BASreadFile);
+   int ErrorCode=0;
+   int F = BASfileOpen(Name, BASFread, &ErrorCode);
+   if (F == -1) { return ErrorCode; }
+   BASfileRead(F, pContent, &ErrorCode);
+   BASfileClose(F, &ErrorCode);
+   BAS_VAR(ErrorCode);
+   BAS_HEX("Content", pContent->data(), pContent->size());
+   return ErrorCode;
 }
 
-bool BASfile::open(const BASstring& FileName, BASmode Mode){
-   switch (Mode)
-   {
-   case BASmode::Read:    m_FileHandle=BASopen(FileName.data(), O_BINARY | O_RDONLY);                                        break;
-   case BASmode::Write:   m_FileHandle=BASopen(FileName.data(), O_BINARY | O_RDWR                     , S_IREAD | S_IWRITE); break;
-   case BASmode::Append:  m_FileHandle=BASopen(FileName.data(), O_BINARY | O_RDWR | O_CREAT | O_APPEND, S_IREAD | S_IWRITE); break;
-   case BASmode::Rewrite: m_FileHandle=BASopen(FileName.data(), O_BINARY | O_RDWR | O_CREAT | O_TRUNC , S_IREAD | S_IWRITE); break;
+int BASfileOpen(const BASstring& FileName, BASfileOpenMode Mode, int* pErrorCode){
+   BAS_FUNCTION(BASfileOpen);
+   int FileHandle = -1;
+   switch (Mode){
+   case BASFread:    FileHandle=BASopen(FileName.data(), O_BINARY | O_RDONLY);                                        break;
+   case BASFwrite:   FileHandle=BASopen(FileName.data(), O_BINARY | O_RDWR                     , S_IREAD | S_IWRITE); break;
+   case BASFappend:  FileHandle=BASopen(FileName.data(), O_BINARY | O_RDWR | O_CREAT | O_APPEND, S_IREAD | S_IWRITE); break;
+   case BASFrewrite: FileHandle=BASopen(FileName.data(), O_BINARY | O_RDWR | O_CREAT | O_TRUNC , S_IREAD | S_IWRITE); break;
    }
-   if (m_FileHandle == -1){
-      m_LastError = errno;
-   }
-   return m_FileHandle != -1;
+   if (FileHandle == -1) { *pErrorCode = errno; }
+   return FileHandle;  
 }
 
-int BASfile::write(const char* pData, int Size){
-   BAS_METHOD(BASfile::write);
-   int AmountWritten = BASwrite(m_FileHandle, pData, Size);
-   if (AmountWritten == -1){
-      m_LastError = errno;    
-   }
+int BASfileWrite(int FileHandle, const char* pData, int Size, int* pErrorCode){
+   BAS_FUNCTION(BASfileWrite);
+   int AmountWritten = BASwrite(FileHandle, pData, Size);
+   if (AmountWritten == -1){ *pErrorCode = errno; }
    BAS_VAR(AmountWritten);
    return AmountWritten;
 }
 
-int BASfile::read(void* pBuffer, int SizeOfBuffer){
-   BAS_METHOD(BASfile::read);
-   int AmountRead = ::read(m_FileHandle, pBuffer, SizeOfBuffer);
-   if (AmountRead == -1){
-      m_LastError = errno;        
-   }
+int BASfileWrite(int FileHandle, const BASstring& Data, int* pErrorCode){
+   BAS_FUNCTION(BASfileWrite - BASstring);
+   return BASfileWrite(FileHandle, Data.data(), Data.size(), pErrorCode);
+}
+
+int BASfileRead (int FileHandle, void* pBuffer, int SizeOfBuffer, int* pErrorCode){
+   BAS_FUNCTION(BASfileRead);
+   int AmountRead = ::read(FileHandle, pBuffer, SizeOfBuffer);
+   if (AmountRead == -1){ *pErrorCode = errno; }
    BAS_VAR(AmountRead);
    return AmountRead;
 }
 
-int BASfile::read(BASstring* pBuffer){
-   BAS_METHOD(BASfile::read - BASstring);
-   pBuffer->setCapacity(size());
+int BASfileRead(int FileHandle, BASstring* pBuffer, int* pErrorCode){
+   BAS_FUNCTION(BASfileRead - BASstring);
+   int FileSize = BASfileSize(FileHandle, pErrorCode);
+   if (FileSize == -1){
+      return -1;
+   }
+   pBuffer->setCapacity(FileSize);
    pBuffer->setSize(pBuffer->capacity());
-   int AmountRead = BASfile::read(pBuffer->data(), pBuffer->capacity());
+   int AmountRead = BASfileRead(FileHandle, pBuffer->data(), pBuffer->capacity(), pErrorCode);
    return AmountRead;
 }
 
-
-void BASfile::close(){
-   BAS_METHOD(BASfile::close);
-   if(m_FileHandle !=-1){
-      ::close(m_FileHandle);
-      m_FileHandle = -1;
+bool BASfileFlush(int FileHandle, int* pErrorCode){
+   BAS_FUNCTION(BASfileFlush);
+   int Result = BASfsync(FileHandle);
+   if (-1 == Result){
+      *pErrorCode = errno;
+      return false;
    }
+   return true;
 }
 
-void BASfile::flush(){
-   BAS_METHOD(BASfile::close);
-   BASfsync(m_FileHandle);
+bool BASfileClose(int FileHandle, int* pErrorCode){
+   BAS_FUNCTION(BASfileClose);
+   if (FileHandle != -1){
+      int Result = ::close(FileHandle);
+      if (-1 == Result){
+         *pErrorCode = errno;
+         return false;
+      } else {
+         return true;
+      }
+   }
+   return false;
 }
 
-BASint64 BASfile::size() {
-   BAS_METHOD(BASfile::size);
-   BASint64 Position = BASseek(m_FileHandle, 0, SEEK_CUR);
-   BASint64 Size = BASseek(m_FileHandle, 0, SEEK_END);
-   int Result = BASseek(m_FileHandle, Position, SEEK_SET);
+BASint64 BASfileSize(int FileHandle, int* pErrorCode) {
+   BAS_FUNCTION(BASfileSize);
+   BASint64 Position = BASseek(FileHandle, 0, SEEK_CUR);
+   BASint64 Size = BASseek(FileHandle, 0, SEEK_END);
+   int Result = BASseek(FileHandle, Position, SEEK_SET);
    if (Result == -1){
-      m_LastError = errno;
+      *pErrorCode = errno;
    }
    BAS_VAR(Size);
    return Size;
 }
 
-BASint64 BASfile::position() {
-   BAS_METHOD(BASfile::position);
-   BASint64 Position = BASseek(m_FileHandle, 0, SEEK_CUR);
+BASint64 BASfilePosition(int FileHandle, int* pErrorCode){
+   BAS_FUNCTION(BASfilePosition);
+   BASint64 Position = BASseek(FileHandle, 0, SEEK_CUR);
    if (Position == -1){
-      m_LastError = errno;
+      *pErrorCode = errno;
    }
    return Position;
-}
+} 

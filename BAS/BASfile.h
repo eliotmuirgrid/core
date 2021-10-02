@@ -5,47 +5,32 @@
 //
 // BASfile
 // 
-// Basic file object.
+// Basic cross platform file API for writing and reading from files.
+// This is deliberately written in a C style.
 //-------------------------------------------------------
 
-#include "BASsink.h"
-#include "BASstring.h"
+class BASstring;
+
 #include "BAStypes.h"
 
 class BASstring;
 
-void BASwriteFile(const BASstring& Name, const BASstring& Content);
-void BASreadFile(const BASstring& Name, BASstring* pContent);
+// Will return zero if successful, otherwise int contains errno.
+int BASwriteFile(const BASstring& Name, const BASstring& Content);
+int BASreadFile(const BASstring& Name, BASstring* pContent);
 
-class BASfile : public BASsink{
-public:
-   enum BASmode{Read, Write, Append, Rewrite};
-   BASfile();
-   virtual ~BASfile();
+enum BASfileOpenMode{BASFread, BASFwrite, BASFappend, BASFrewrite};
+int BASfileOpen(const BASstring& FileName, BASfileOpenMode Mode, int* pErrorCode);
 
-   bool open(const BASstring& FileName, BASmode Mode);
+int BASfileWrite(int FileHandle, const char* pData, int Size, int* pErrorCode);
+int BASfileWrite(int FileHandle, const BASstring& Data, int* pErrorCode);
+int BASfileRead (int FileHandle, void* pBuffer, int SizeOfBuffer, int* pErrorCode);
+int BASfileRead (int FileHandle, BASstring* pBuffer, int* pErrorCode);
 
-   int write(const BASstring& Data) { return write(Data.data(), Data.size());}
-   virtual int write(const char* pData, int Size);
+BASint64 BASfileSize(int FileHandle, int* pErrorCode);
+BASint64 BASfilePosition(int FileHandle, int* pErrorCode);  // Returns -1 if the function fails.
 
-   int read(void* pBuffer, int SizeOfBuffer);
-
-   int read(BASstring* pBuffer);
-
-   void close();
-
-   virtual void flush();
-
-   int lastError() const;
-
-   BASint64 position();
-
-   BASint64 size();
-private:
-   int m_FileHandle;
-   int m_LastError;
-   BASfile(const BASfile& Orig); // not allowed
-   BASfile& operator=(const BASfile& Orig); // not allowed.
-};
+bool BASfileFlush(int FileHandle, int* pErrorCode);  
+bool BASfileClose(int FileHandle, int* pErrorCode);
 
 #endif
