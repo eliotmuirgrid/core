@@ -7,6 +7,8 @@
 // 
 // Basic cross platform file API for writing and reading from files.
 // This is deliberately written in a C style.
+//
+// See BASerror.h for function to translate the error codes in a platform independent way.
 //-------------------------------------------------------
 
 class BASstring;
