@@ -14,6 +14,9 @@
 
 class BASstring;
 
+void BASwriteFile(const BASstring& Name, const BASstring& Content);
+void BASreadFile(const BASstring& Name, BASstring* pContent);
+
 class BASfile : public BASsink{
 public:
    enum BASmode{Read, Write, Append, Rewrite};

@@ -14,7 +14,7 @@ BAS_TRACE_INIT;
 
 #include <BAS/BASfile.h>
 
-static void testReadWrite(){
+static bool testReadWrite(){
    BAS_FUNCTION(testReadWrite);
    BASstring Data = "The quick brown fox jumped over puff.";
 
@@ -36,6 +36,7 @@ static void testReadWrite(){
    BAS_VAR((Data != Out));
    TEST_EQUAL(Data, Out);
    BAS_TRC("Done");
+   return true;
 }
 
 void testFile(TESTapp* pApp){

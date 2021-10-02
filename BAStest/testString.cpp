@@ -12,7 +12,7 @@
 #include <BAS/BAStrace.h>
 BAS_TRACE_INIT; 
 
-static void testChangeCapacity(){
+static bool testChangeCapacity(){
    BAS_FUNCTION(testChangeCapacity);
    BASstring A = "ABC";
    A.setCapacity(8); // short --> short
@@ -35,33 +35,37 @@ static void testChangeCapacity(){
    TEST_EQUAL(A.capacity(), 8);
    TEST_EQUAL(A.size(), 3);
    TEST_EQUAL(A, "ABC");
+   return true;
 }
 
-static void testGrowToNonShort(){
+static bool testGrowToNonShort(){
    BAS_FUNCTION(testGrowToNonShort);
    BASstring Short;
    Short.append("1234567890");
    Short.append("1234567890");
    Short.append("1234567890");
    TEST_EQUAL(Short, "123456789012345678901234567890");
+   return true;
 }
 
-static void testAppend(){
+static bool testAppend(){
    BAS_FUNCTION(testAppend);
    BASstring A= "0123456789012345";
    A += "6";
    A += "7";
    A += "8";
    A += "9";
+   return true;
 }
 
-static void testEqual(){
+static bool testEqual(){
    BAS_FUNCTION(testEqual);
    BASstring A = "Foo";
    BASstring B = "Foo";
    BASstring C = "Bar";
    TEST_EQUAL(A==B, true);
    TEST_EQUAL(A==C, false);
+   return true;
 }
 
 void testString(TESTapp* pApp){

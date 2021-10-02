@@ -34,15 +34,13 @@ static void runTests(const BASavlTree<BASstring, TESTappFunc>& Tests){
    }
    auto End = Tests.cend();
    for (auto i = Tests.cbegin(); i != End; ++i){
-       BASout << newline << "Running " << i.key() << "...";
-       try{
-          TESTappFunc pTestFunc = i.value();
-          BAS_VAR(pTestFunc);
-          (*pTestFunc)();  // Run the test.
-          BASout << "OK";
-       } catch (const BASerror& Error){
-          BASout << "FAILED" << newline
-                 << Error.message();
+       BASout << "Running " << i.key() << "...";
+       TESTappFunc pTestFunc = i.value();
+       BAS_VAR(pTestFunc);
+       if ((*pTestFunc)()){  // Run the test.
+         BASout << "OK" << newline;
+      } else { 
+        BASout << "FAILED" << newline;
        }
    }
    BASout << newline;

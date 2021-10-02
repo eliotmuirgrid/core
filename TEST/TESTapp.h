@@ -9,10 +9,10 @@
 //-------------------------------------------------------
 
 #include <BAS/BASavlTree.h>
-#include <BAS/BASerror.h>
-#include <BAS/BASsinkString.h>
+#include <BAS/BASstream.h>
+#include <BAS/BASstring.h>
 
-typedef void (*TESTappFunc)();
+typedef bool (*TESTappFunc)();
 
 class TESTapp{
 public:
@@ -28,19 +28,13 @@ private:
 };
 
 #define TEST_EQUAL(LHS,RHS) { if ((LHS) != (RHS)) {\
-      BASstring String;\
-      BASsinkString StringSink(&String);\
-      BASstream ErrStream(StringSink);\
-      ErrStream  << "Expected: " #LHS << " = " << #RHS << newline << "Actual: " << (LHS);\
-      throw BASerror(String, 0);\
+      BASout  << "Expected: " #LHS << " = " << #RHS << newline << "Actual: " << (LHS);\
+      return false;\
    }}
 
 #define TEST_NOT_EQUAL(LHS,RHS) { if ((LHS) == (RHS)) {\
-      BASstring String;\
-      BASsinkString StringSink(&String);\
-      BASstream ErrStream(StringSink);\
-      ErrStream  << "Expected: " #LHS << " != " << #RHS;\
-      throw BASerror(String, 0);\
+      BASout  << "Expected: " #LHS << " != " << #RHS;\
+      return false;\
    }}
 
 
