@@ -36,7 +36,7 @@ test:	$(OBJECTS) $(SOURCES)
 
 # Posix build command
 %.o:	%.cpp
-	$(CC) -MMD -I../ -std=c++11 -c $< -o $@
+	$(CC) -MMD -fno-exceptions -fno-unwind-tables -fno-asynchronous-unwind-tables -I../ -std=c++11 -c $< -o $@
 %.o:	%.c
 	$(CC) -MMD -c $< -o $@
 
