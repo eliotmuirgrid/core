@@ -14,14 +14,20 @@ BAS_TRACE_INIT;
 
 #include <errno.h>
 
-#ifndef _WIN32
-   #include <fcntl.h>
-#endif
+ #include <fcntl.h>
 
+#ifdef _WIN32
+  #include <windows.h>
+  #include <sys/stat.h>
+  #include <io.h>
+  #define O_RDONLY _O_RDONLY
+  #define S_IREAD _S_IREAD
+#endif
 
 #ifndef O_BINARY
 #  define O_BINARY 0
 #endif
+
 
 int BASwriteFile(const BASstring& Name, const BASstring& Content){
    BAS_FUNCTION(BASwriteFile);
