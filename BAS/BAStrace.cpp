@@ -13,7 +13,7 @@ BAS_TRACE_INIT;
 #include "BASglob.h"
 #include "BAShex.h"
 #include "BAStimestamp.h"
-#include "BASfile.h"
+#include "BASfileImp.h"
 #include "BASsinkFile.h"
 
 #include <time.h>
@@ -24,8 +24,17 @@ BAS_TRACE_INIT;
 #include <string.h>
 
 
+#include <errno.h>
+#include <fcntl.h>
+
 #ifdef _WIN32
-#include <windows.h>
+  #include <windows.h>
+  #include <sys/stat.h>
+  #include <io.h>
+#endif
+
+
+#ifdef _WIN32
 long BASthreadId(){ return (long)GetCurrentThreadId(); }
 #else
 #include <pthread.h>
@@ -54,8 +63,8 @@ void BAStimeStamp(const char* pModule){
    char s[64];
    strftime(s, sizeof(s), "T %H:%M:%S", tm);  // prepend newline.
    BAStrace << s << ".";
-   char Buffer[3];
-   int ms = Time.Microseconds / 1000;
+   char Buffer[7];
+   int ms = Time.Microseconds / 1000000;
    sprintf(Buffer,"%03i", ms);  // zero pad the millseconds
    BAStrace << Buffer << " " << (void*)BASthreadId() << " ";
    BAStrace << pModule << " ";  // TODO should output size.
@@ -81,7 +90,11 @@ void BASsetTracePattern(const char* pPattern){
 
 void BASsetTraceFile(const char* FileName){
    int ErrorCode;
-   int FileHandle = BASfileOpen(FileName, BASFrewrite,&ErrorCode);
+   int FileHandle = BASopen(FileName, O_BINARY | O_RDWR | O_CREAT | O_TRUNC , S_IREAD | S_IWRITE);  
+   if (FileHandle == -1){
+      BASout << "### Failed to open " << FileName << " for tracing." << newline;
+      return;
+   }
    BAStrace.setSink(new BASsinkFile(FileHandle));  // Does it matter that we don't close the file handle?
    BASout << "### Tracing redirected into " << FileName << newline;
 }
@@ -129,6 +142,6 @@ void BASwriteIndent(BASsink* pSink, int Level){
 
 
 void BAShexTrace(int Size, const void* pBuffer, BASstream& Stream){
-   Stream << " (size=" << Size << ")" << newline;
+   Stream << "= (size=" << Size << ")" << newline;
    BAShex(Size, pBuffer, Stream.sink(), 60);
 }
