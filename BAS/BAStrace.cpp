@@ -75,6 +75,7 @@ BASmodule::BASmodule(const char* pFileName){
 static const char* s_TracePattern = "";
 
 void BASsetTracePattern(const char* pPattern){
+   BASout << "### Tracing files matching: " << pPattern << newline;
    s_TracePattern = strdup(pPattern);  // purposely leaked.
 }
 
@@ -82,6 +83,7 @@ void BASsetTraceFile(const char* FileName){
    int ErrorCode;
    int FileHandle = BASfileOpen(FileName, BASFrewrite,&ErrorCode);
    BAStrace.setSink(new BASsinkFile(FileHandle));  // Does it matter that we don't close the file handle?
+   BASout << "### Tracing redirected into " << FileName << newline;
 }
 
 bool BASloggingEnabled(const char* ModuleName, int* pResult){
