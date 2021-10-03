@@ -31,7 +31,8 @@ static bool testError(){
    BASstring Out;
    int ErrorCode = BASreadFile("nonexistent.txt", &Out);
    TEST_NOT_EQUAL(ErrorCode, 0);
-   BAS_VAR(BASerrorMessage(ErrorCode));
+   BASstring Error = BASerrorMessage(ErrorCode);
+   BAS_VAR(Error);
    return true;
 }
 
