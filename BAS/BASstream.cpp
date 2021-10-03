@@ -8,13 +8,14 @@
 
 #include "BASstream.h"
 #include "BASsink.h"
-#include "BASsinkStandardOut.h"
+#include "BASsinkFile.h"
 #include "BAShex.h"
 
 #include <string.h>
 #include <stdio.h>
 
-BASstream BASout(new BASsinkStandardOut(), true);
+BASstream BASout(new BASsinkFile(1), true);
+BASstream BASerr(new BASsinkFile(2), true); 
 
 BASstream::BASstream(BASsink& Sink) : m_pSink(&Sink), m_IsOwner(false){
 

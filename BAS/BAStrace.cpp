@@ -9,7 +9,7 @@
 #include "BAStrace.h"
 BAS_TRACE_INIT;
 
-#include "BASsinkStandardOut.h"
+#include "BASsinkFile.h"
 #include "BASglob.h"
 #include "BAShex.h"
 #include "BAStimestamp.h"
@@ -33,7 +33,7 @@ long BASthreadId(){ return (long)pthread_self(); }
 
 BASmutex s_LogMutex;
 
-BASstream BAStrace(new BASsinkStandardOut(), false);  // purposely leaked.
+BASstream BAStrace(new BASsinkFile(1), false);  // purposely leaked.
 
 static thread_local int s_BASindentLevel=0;
 

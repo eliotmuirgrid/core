@@ -43,5 +43,6 @@ BASstream& flush(BASstream& Stream);
 BASstream& newline(BASstream& Stream);
 
 extern BASstream BASout; 
+extern BASstream BASerr;
 
 #endif
