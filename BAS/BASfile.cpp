@@ -32,7 +32,7 @@ BAS_TRACE_INIT;
 int BASwriteFile(const BASstring& Name, const BASstring& Content){
    BAS_FUNCTION(BASwriteFile);
    int ErrorCode=0;
-   int F = BASfileOpen(Name, BASFrewrite, &ErrorCode);
+   int F = BASfileOpen(Name.data(), BASFrewrite, &ErrorCode);
    if (F == -1) { return ErrorCode; }
    int AmountWritten = BASfileWrite(F, Content, &ErrorCode);
    BAS_VAR(AmountWritten);
@@ -43,7 +43,7 @@ int BASwriteFile(const BASstring& Name, const BASstring& Content){
 int BASreadFile(const BASstring& Name, BASstring* pContent){
    BAS_FUNCTION(BASreadFile);
    int ErrorCode=0;
-   int F = BASfileOpen(Name, BASFread, &ErrorCode);
+   int F = BASfileOpen(Name.data(), BASFread, &ErrorCode);
    if (F == -1) { return ErrorCode; }
    BASfileRead(F, pContent, &ErrorCode);
    BASfileClose(F, &ErrorCode);
@@ -52,15 +52,15 @@ int BASreadFile(const BASstring& Name, BASstring* pContent){
    return ErrorCode;
 }
 
-int BASfileOpen(const BASstring& FileName, BASfileOpenMode Mode, int* pErrorCode){
+int BASfileOpen(const char* FileName, BASfileOpenMode Mode, int* pErrorCode){
    BAS_FUNCTION(BASfileOpen);
    BAS_VAR2(FileName, Mode);
    int FileHandle = -1;
    switch (Mode){
-   case BASFread:    FileHandle=BASopen(FileName.data(), O_BINARY | O_RDONLY);                                        break;
-   case BASFwrite:   FileHandle=BASopen(FileName.data(), O_BINARY | O_RDWR                     , S_IREAD | S_IWRITE); break;
-   case BASFappend:  FileHandle=BASopen(FileName.data(), O_BINARY | O_RDWR | O_CREAT | O_APPEND, S_IREAD | S_IWRITE); break;
-   case BASFrewrite: FileHandle=BASopen(FileName.data(), O_BINARY | O_RDWR | O_CREAT | O_TRUNC , S_IREAD | S_IWRITE); break;
+   case BASFread:    FileHandle=BASopen(FileName, O_BINARY | O_RDONLY);                                        break;
+   case BASFwrite:   FileHandle=BASopen(FileName, O_BINARY | O_RDWR                     , S_IREAD | S_IWRITE); break;
+   case BASFappend:  FileHandle=BASopen(FileName, O_BINARY | O_RDWR | O_CREAT | O_APPEND, S_IREAD | S_IWRITE); break;
+   case BASFrewrite: FileHandle=BASopen(FileName, O_BINARY | O_RDWR | O_CREAT | O_TRUNC , S_IREAD | S_IWRITE); break;
    }
    if (FileHandle == -1) { *pErrorCode = errno; BAS_VAR(*pErrorCode); }
    BAS_VAR(FileHandle);

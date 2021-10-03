@@ -13,6 +13,8 @@ BAS_TRACE_INIT;
 #include "BASglob.h"
 #include "BAShex.h"
 #include "BAStimestamp.h"
+#include "BASfile.h"
+#include "BASsinkFile.h"
 
 #include <time.h>
 #include <stdio.h>  // for printf
@@ -74,6 +76,12 @@ static const char* s_TracePattern = "";
 
 void BASsetTracePattern(const char* pPattern){
    s_TracePattern = strdup(pPattern);  // purposely leaked.
+}
+
+void BASsetTraceFile(const char* FileName){
+   int ErrorCode;
+   int FileHandle = BASfileOpen(FileName, BASFrewrite,&ErrorCode);
+   BAStrace.setSink(new BASsinkFile(FileHandle));  // Does it matter that we don't close the file handle?
 }
 
 bool BASloggingEnabled(const char* ModuleName, int* pResult){

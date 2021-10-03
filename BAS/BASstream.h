@@ -19,6 +19,8 @@ public:
    ~BASstream();
 
    BASsink* sink();
+
+   void setSink(BASsink* pSink, bool Owner=true);
    
 private:
    bool m_IsOwner;

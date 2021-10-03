@@ -25,6 +25,15 @@ BASstream::BASstream(BASsink* pSink, bool IsOwner) : m_pSink(pSink), m_IsOwner(I
 
 }
 
+void BASstream::setSink(BASsink* pSink, bool Owner) {
+   if (m_IsOwner){
+      delete m_pSink;
+   }
+   m_IsOwner = Owner;
+   m_pSink = pSink;
+}
+
+
 BASstream::~BASstream(){
    if (m_IsOwner){
       delete m_pSink;

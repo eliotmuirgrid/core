@@ -16,12 +16,12 @@ BAS_TRACE_INIT;
 // We hard code tracing into the BASargParser
 static void initTracingFlags(BASargParser* pParser){
    pParser->addArgFlag("trace", "glob", "Turn on debug tracing of C++ code using glob match expression for files. i.e. --trace \"* -BASstring\" (match everything, exclude BASstring).");
+   pParser->addArgFlag("out", "filename", "Redirect tracing output to a file.");
 }
 
 static void activateTracing(BASargParser* pParser){
-   if (pParser->present("trace")){
-      BASsetTracePattern(pParser->flagArg("trace").data());
-   }
+   if (pParser->present("trace")){ BASsetTracePattern(pParser->flagArg("trace").data());}
+   if (pParser->present("out"))  { BASsetTraceFile(pParser->flagArg("out").data());     }
 }
 
 BASargParser::BASargParser(){

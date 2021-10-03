@@ -30,6 +30,7 @@
 // BASargParser will make it difficult to trace the BASstring class etc.
 // Since that object uses BASstring and BASavlTree etc.
 void BASsetTracePattern(const char* Pattern);
+void BASsetTraceFile(const char* FileName);
 
 extern BASstream BAStrace;
 

@@ -22,7 +22,7 @@ int BASwriteFile(const BASstring& Name, const BASstring& Content);
 int BASreadFile(const BASstring& Name, BASstring* pContent);
 
 enum BASfileOpenMode{BASFread, BASFwrite, BASFappend, BASFrewrite};
-int BASfileOpen(const BASstring& FileName, BASfileOpenMode Mode, int* pErrorCode);
+int BASfileOpen(const char* pFileName, BASfileOpenMode Mode, int* pErrorCode);
 
 int BASfileWrite(int FileHandle, const char* pData, int Size, int* pErrorCode);
 int BASfileWrite(int FileHandle, const BASstring& Data, int* pErrorCode);
