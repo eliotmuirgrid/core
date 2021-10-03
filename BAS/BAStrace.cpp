@@ -52,7 +52,7 @@ void BAStimeStamp(const char* pModule){
    BAStimestamp Time = BAScurrentTime();
    struct tm* tm = localtime(&Time.Seconds);
    char s[64];
-   strftime(s, sizeof(s), "\nT %H:%M:%S", tm);  // prepend newline.
+   strftime(s, sizeof(s), "T %H:%M:%S", tm);  // prepend newline.
    BAStrace << s << ".";
    char Buffer[3];
    int ms = Time.Microseconds / 1000;
@@ -97,7 +97,7 @@ bool BASloggingEnabled(const char* ModuleName, int* pResult){
 BASraiiFunc::BASraiiFunc(const char* Name, const char* pModule, int Line, bool Trace) : m_pModule(pModule), m_pName(Name), m_Trace(Trace) {
    if (Trace){
       BASlocker Lock(s_LogMutex);
-      BAStimeStamp(pModule); BAStrace << ">" << Name << " Line:" << Line;
+      BAStimeStamp(pModule); BAStrace << ">" << Name << " Line:" << Line << newline;
       s_BASindentLevel++;
    }
 }
@@ -105,7 +105,7 @@ BASraiiFunc::BASraiiFunc(const char* Name, const char* pModule, int Line, bool T
 BASraiiFunc::BASraiiFunc(const char* Name, const char* pModule, int Line, const void* pInstance, bool Trace) : m_pModule(pModule), m_pName(Name), m_Trace(Trace) {
    if (Trace){
       BASlocker Lock(s_LogMutex);
-      BAStimeStamp(pModule); BAStrace << ">" << Name << " Line:" << Line << " this=" << pInstance;
+      BAStimeStamp(pModule); BAStrace << ">" << Name << " Line:" << Line << " this=" << pInstance << newline;
       s_BASindentLevel++;
    }
 }
@@ -114,7 +114,7 @@ BASraiiFunc::~BASraiiFunc(){
    if (m_Trace){
       s_BASindentLevel--;
       BASlocker Lock(s_LogMutex);
-      BAStimeStamp(m_pModule); BAStrace << "<" << m_pName;
+      BAStimeStamp(m_pModule); BAStrace << "<" << m_pName << newline;
    }
 }
 

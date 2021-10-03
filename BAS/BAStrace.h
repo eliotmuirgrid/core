@@ -59,7 +59,7 @@ bool BASloggingEnabled(const char* ModuleName, int* pResult);
       static int BASdoLog;\
       if (BASdoLog > 0 || (BASdoLog == 0 && BASloggingEnabled(sModule.ModuleName, &BASdoLog)) ){\
          BASlocker Lock(s_LogMutex);\
-         BAStimeStamp(sModule.ModuleName); BAStrace << X;\
+         BAStimeStamp(sModule.ModuleName); BAStrace << X << newline;\
       }\
    } while(0)
 
@@ -70,7 +70,7 @@ void BAShexTrace(int Size, const void* pBuffer, BASstream& Stream);
       static int BASdoLog;\
       if (BASdoLog > 0 || (BASdoLog == 0 && BASloggingEnabled(sModule.ModuleName, &BASdoLog)) ){\
          BASlocker Lock(s_LogMutex);\
-         BAStimeStamp(sModule.ModuleName); BAStrace << LABEL; BAShexTrace(SIZE, BUFFER, BAStrace);\
+         BAStimeStamp(sModule.ModuleName); BAStrace << LABEL; BAShexTrace(SIZE, BUFFER, BAStrace); BAStrace << newline;\
       }\
    } while(0)
 
