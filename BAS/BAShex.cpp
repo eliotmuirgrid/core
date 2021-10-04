@@ -25,8 +25,8 @@ static void BASwriteHex(char Char, char** pBuffer){
    int High = (Char & 0xF0) >> 4;
    int Low = Char & 0xF;
 //   BAS_VAR2(High, Low);
-   *((*pBuffer)++) =  High <= 10 ? '0' + High : 'A' + High -10;
-   *((*pBuffer)++) =  Low <= 10 ? '0' + Low : 'A' + Low -10;
+   *((*pBuffer)++) =  High < 10 ? '0' + High : 'A' + High -10;
+   *((*pBuffer)++) =  Low < 10 ? '0' + Low : 'A' + Low -10;
    *((*pBuffer)++) = ' ';
 //   BAS_VAR(*pBuffer);
 }
