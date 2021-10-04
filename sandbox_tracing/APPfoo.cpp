@@ -16,10 +16,13 @@ APPfoo::~APPfoo(){
 void APPfoo::run(const BASstring& Value, int Count){
    BAS_METHOD(APPfoo::run);
    BAS_VAR2(Value, Count);
+   BASstring Out;
    for (int i=0; i < Count; i++){
       BAS_VAR(i);
-      BASout << Value << newline;
+      Out += Value + "\n";
    }
+   BAS_HEX("Dump", Out.data(), Out.size());
+   BASout << Out;
 }
 
 
