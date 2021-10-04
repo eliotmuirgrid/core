@@ -48,27 +48,18 @@ BASstream BAStrace(new BASsinkFile(1), false);  // purposely leaked.
 
 static thread_local int s_BASindentLevel=0;
 
-// TODO - how do we get millisecond timing?
-void  BAStimeStampOld() {
-   time_t t = time(NULL);
-   struct tm* tm = localtime(&t);
-   char s[64];
-   strftime(s, sizeof(s), "T %H:%M:%S ", tm);
-   BAStrace << s;
-}
-
-void BAStimeStamp(const char* pModule){
+void BAStimeStamp(const char* pModule, BASstream& Stream){
    BAStimestamp Time = BAScurrentTime();
    struct tm* tm = localtime(&Time.Seconds);
    char s[64];
-   strftime(s, sizeof(s), "T %H:%M:%S", tm);  // prepend newline.
+   strftime(s, sizeof(s), "T %H:%M:%S", tm); 
    BAStrace << s << ".";
    char Buffer[7];
    int ms = Time.Microseconds / 1000000;
    sprintf(Buffer,"%03i", ms);  // zero pad the millseconds
-   BAStrace << Buffer << " " << (void*)BASthreadId() << " ";
-   BAStrace << pModule << " ";  // TODO should output size.
-   BASwriteIndent(BAStrace.sink(), s_BASindentLevel);
+   Stream << Buffer << " " << (void*)BASthreadId() << " ";
+   Stream << pModule << " ";  // TODO should output size.
+   BASwriteIndent(Stream.sink(), s_BASindentLevel);
 }
 
 BASmodule::BASmodule(const char* pFileName){
@@ -112,7 +103,7 @@ bool BASloggingEnabled(const char* ModuleName, int* pResult){
 BASraiiFunc::BASraiiFunc(const char* Name, const char* pModule, int Line, bool Trace) : m_pModule(pModule), m_pName(Name), m_Trace(Trace) {
    if (Trace){
       BASlocker Lock(s_LogMutex);
-      BAStimeStamp(pModule); BAStrace << ">" << Name << " Line:" << Line << newline;
+      BAStimeStamp(pModule, BAStrace); BAStrace << ">" << Name << " Line:" << Line << newline;
       s_BASindentLevel++;
    }
 }
@@ -120,7 +111,7 @@ BASraiiFunc::BASraiiFunc(const char* Name, const char* pModule, int Line, bool T
 BASraiiFunc::BASraiiFunc(const char* Name, const char* pModule, int Line, const void* pInstance, bool Trace) : m_pModule(pModule), m_pName(Name), m_Trace(Trace) {
    if (Trace){
       BASlocker Lock(s_LogMutex);
-      BAStimeStamp(pModule); BAStrace << ">" << Name << " Line:" << Line << " this=" << pInstance << newline;
+      BAStimeStamp(pModule, BAStrace); BAStrace << ">" << Name << " Line:" << Line << " this=" << pInstance << newline;
       s_BASindentLevel++;
    }
 }
@@ -129,7 +120,7 @@ BASraiiFunc::~BASraiiFunc(){
    if (m_Trace){
       s_BASindentLevel--;
       BASlocker Lock(s_LogMutex);
-      BAStimeStamp(m_pModule); BAStrace << "<" << m_pName << newline;
+      BAStimeStamp(m_pModule, BAStrace); BAStrace << "<" << m_pName << newline;
    }
 }
 

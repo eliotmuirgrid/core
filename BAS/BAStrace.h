@@ -24,6 +24,8 @@
 #include "BASstream.h"
 #include <stdio.h>
 #include "BASmutex.h"
+#include "BASstring.h"
+#include "BASsinkString.h"
 #include <string.h>
 
 // Call this to activate tracing if you need more control - using
@@ -34,7 +36,7 @@ void BASsetTraceFile(const char* FileName);
 
 extern BASstream BAStrace;
 
-void BAStimeStamp(const char* pModule);
+void BAStimeStamp(const char* pModule, BASstream& Stream);
 void BASmilliSeconds();
 extern BASmutex s_LogMutex;
 
@@ -54,12 +56,23 @@ public:
 
 bool BASloggingEnabled(const char* ModuleName, int* pResult);
 
+class BASlogStream : public BASstream{
+public:
+   BASstring m_String;
+   BASlogStream() : BASstream(new BASsinkString(&m_String), true) {}
+   ~BASlogStream() {}
+private:
+};
+
 #define BAS_TRC(X)\
    do {\
       static int BASdoLog;\
       if (BASdoLog > 0 || (BASdoLog == 0 && BASloggingEnabled(sModule.ModuleName, &BASdoLog)) ){\
+         BASlogStream LogStream;\
+         LogStream << X << newline;\
          BASlocker Lock(s_LogMutex);\
-         BAStimeStamp(sModule.ModuleName); BAStrace << X << newline;\
+         BAStimeStamp(sModule.ModuleName, BAStrace);\
+         BAStrace << LogStream.m_String;\
       }\
    } while(0)
 
@@ -69,8 +82,11 @@ void BAShexTrace(int Size, const void* pBuffer, BASstream& Stream);
    do {\
       static int BASdoLog;\
       if (BASdoLog > 0 || (BASdoLog == 0 && BASloggingEnabled(sModule.ModuleName, &BASdoLog)) ){\
+         BASlogStream LogStream;\
+         LogStream << LABEL; BAShexTrace(SIZE, BUFFER, LogStream); LogStream << newline;\
          BASlocker Lock(s_LogMutex);\
-         BAStimeStamp(sModule.ModuleName); BAStrace << LABEL; BAShexTrace(SIZE, BUFFER, BAStrace); BAStrace << newline;\
+         BAStimeStamp(sModule.ModuleName, BAStrace);\
+         BAStrace << LogStream.m_String;\
       }\
    } while(0)
 
