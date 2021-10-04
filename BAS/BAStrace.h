@@ -31,10 +31,10 @@
 // Call this to activate tracing if you need more control - using
 // BASargParser will make it difficult to trace the BASstring class etc.
 // Since that object uses BASstring and BASavlTree etc.
-void BASsetTracePattern(const char* Pattern);
+void BAStrace(const char* Pattern);
 void BASsetTraceFile(const char* FileName);
 
-extern BASstream BAStrace;
+extern BASstream BASlog;
 
 void BAStimeStamp(const char* pModule, BASstream& Stream);
 void BASmilliSeconds();
@@ -71,8 +71,8 @@ private:
          BASlogStream LogStream;\
          LogStream << X << newline;\
          BASlocker Lock(s_LogMutex);\
-         BAStimeStamp(sModule.ModuleName, BAStrace);\
-         BAStrace << LogStream.m_String;\
+         BAStimeStamp(sModule.ModuleName, BASlog);\
+         BASlog << LogStream.m_String;\
       }\
    } while(0)
 
@@ -85,8 +85,8 @@ void BAShexTrace(int Size, const void* pBuffer, BASstream& Stream);
          BASlogStream LogStream;\
          LogStream << LABEL; BAShexTrace(SIZE, BUFFER, LogStream); LogStream << newline;\
          BASlocker Lock(s_LogMutex);\
-         BAStimeStamp(sModule.ModuleName, BAStrace);\
-         BAStrace << LogStream.m_String;\
+         BAStimeStamp(sModule.ModuleName, BASlog);\
+         BASlog << LogStream.m_String;\
       }\
    } while(0)
 

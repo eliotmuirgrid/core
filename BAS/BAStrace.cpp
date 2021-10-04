@@ -44,7 +44,7 @@ long BASthreadId(){ return (long)pthread_self(); }
 
 BASmutex s_LogMutex;
 
-BASstream BAStrace(new BASsinkFile(1), false);  // purposely leaked.
+BASstream BASlog(new BASsinkFile(1), false);  // purposely leaked.
 
 static thread_local int s_BASindentLevel=0;
 
@@ -58,7 +58,7 @@ void BAStimeStamp(const char* pModule, BASstream& Stream){
       struct tm* tm = localtime(&s_BASlastTimeStamp);
       strftime(s_BAStimeBuffer, sizeof(s_BAStimeBuffer), "T %H:%M:%S", tm); 
    }
-   BAStrace << s_BAStimeBuffer << ".";
+   BASlog << s_BAStimeBuffer << ".";
    char Buffer[7];
    int ms = Time.Microseconds / 1000000;
    sprintf(Buffer,"%03i", ms);  // zero pad the millseconds
@@ -79,7 +79,7 @@ BASmodule::BASmodule(const char* pFileName){
 
 static const char* s_TracePattern = "";
 
-void BASsetTracePattern(const char* pPattern){
+void BAStrace(const char* pPattern){
    BASout << "### Tracing files matching: " << pPattern << newline;
    s_TracePattern = strdup(pPattern);  // purposely leaked.
 }
@@ -91,7 +91,7 @@ void BASsetTraceFile(const char* FileName){
       BASout << "### Failed to open " << FileName << " for tracing." << newline;
       return;
    }
-   BAStrace.setSink(new BASsinkFile(FileHandle));  // Does it matter that we don't close the file handle?
+   BASlog.setSink(new BASsinkFile(FileHandle));  // Does it matter that we don't close the file handle?
    BASout << "### Tracing redirected into " << FileName << newline;
 }
 
@@ -108,7 +108,7 @@ bool BASloggingEnabled(const char* ModuleName, int* pResult){
 BASraiiFunc::BASraiiFunc(const char* Name, const char* pModule, int Line, bool Trace) : m_pModule(pModule), m_pName(Name), m_Trace(Trace) {
    if (Trace){
       BASlocker Lock(s_LogMutex);
-      BAStimeStamp(pModule, BAStrace); BAStrace << ">" << Name << " Line:" << Line << newline;
+      BAStimeStamp(pModule, BASlog); BASlog << ">" << Name << " Line:" << Line << newline;
       s_BASindentLevel++;
    }
 }
@@ -116,7 +116,7 @@ BASraiiFunc::BASraiiFunc(const char* Name, const char* pModule, int Line, bool T
 BASraiiFunc::BASraiiFunc(const char* Name, const char* pModule, int Line, const void* pInstance, bool Trace) : m_pModule(pModule), m_pName(Name), m_Trace(Trace) {
    if (Trace){
       BASlocker Lock(s_LogMutex);
-      BAStimeStamp(pModule, BAStrace); BAStrace << ">" << Name << " Line:" << Line << " this=" << pInstance << newline;
+      BAStimeStamp(pModule, BASlog); BASlog << ">" << Name << " Line:" << Line << " this=" << pInstance << newline;
       s_BASindentLevel++;
    }
 }
@@ -125,7 +125,7 @@ BASraiiFunc::~BASraiiFunc(){
    if (m_Trace){
       s_BASindentLevel--;
       BASlocker Lock(s_LogMutex);
-      BAStimeStamp(m_pModule, BAStrace); BAStrace << "<" << m_pName << newline;
+      BAStimeStamp(m_pModule, BASlog); BASlog << "<" << m_pName << newline;
    }
 }
 

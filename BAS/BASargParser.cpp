@@ -21,7 +21,7 @@ static void initTracingFlags(BASargParser* pParser){
 
 static void activateTracing(BASargParser* pParser){
    if (pParser->present("out"))  { BASsetTraceFile(pParser->flagArg("out").data());     }
-   if (pParser->present("trace")){ BASsetTracePattern(pParser->flagArg("trace").data());}
+   if (pParser->present("trace")){ BAStrace(pParser->flagArg("trace").data());}
 }
 
 BASargParser::BASargParser(){
