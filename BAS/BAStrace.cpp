@@ -13,7 +13,7 @@ BAS_TRACE_INIT;
 #include "BASglob.h"
 #include "BAShex.h"
 #include "BAStimestamp.h"
-#include "BASfileImp.h"
+
 #include "BASsinkFile.h"
 
 #include <time.h>
@@ -33,12 +33,13 @@ BAS_TRACE_INIT;
   #include <io.h>
 #endif
 
+#include "BASfileImp.h"
 
 #ifdef _WIN32
-long BASthreadId(){ return (long)GetCurrentThreadId(); }
+BASint64 BASthreadId(){ return (BASint64)GetCurrentThreadId(); }
 #else
 #include <pthread.h>
-long BASthreadId(){ return (long)pthread_self(); }
+BASint64 BASthreadId(){ return (BASint64)pthread_self(); }
 #endif
 
 
