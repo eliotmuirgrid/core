@@ -12,6 +12,7 @@
 #include <BAS/BAStrace.h>
 BAS_TRACE_INIT; 
 
+#include <BAS/BASutil.h>
 #include <BAS/BASfile.h>
 #include <BAS/BASerror.h>
 

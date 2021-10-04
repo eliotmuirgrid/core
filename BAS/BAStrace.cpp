@@ -48,12 +48,17 @@ BASstream BAStrace(new BASsinkFile(1), false);  // purposely leaked.
 
 static thread_local int s_BASindentLevel=0;
 
+static char   s_BAStimeBuffer[64];
+static time_t s_BASlastTimeStamp=0;
+
 void BAStimeStamp(const char* pModule, BASstream& Stream){
    BAStimestamp Time = BAScurrentTime();
-   struct tm* tm = localtime(&Time.Seconds);
-   char s[64];
-   strftime(s, sizeof(s), "T %H:%M:%S", tm); 
-   BAStrace << s << ".";
+   if (s_BASlastTimeStamp != Time.Seconds){  //Calculating the Julian date from unix epoch is CPU intensive, so only do it when you need to.
+      s_BASlastTimeStamp = Time.Seconds;
+      struct tm* tm = localtime(&s_BASlastTimeStamp);
+      strftime(s_BAStimeBuffer, sizeof(s_BAStimeBuffer), "T %H:%M:%S", tm); 
+   }
+   BAStrace << s_BAStimeBuffer << ".";
    char Buffer[7];
    int ms = Time.Microseconds / 1000000;
    sprintf(Buffer,"%03i", ms);  // zero pad the millseconds

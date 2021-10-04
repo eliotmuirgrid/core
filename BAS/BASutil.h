@@ -11,4 +11,6 @@
 #define BAS_MIN(a,b) (((a)<(b))?(a):(b))
 #define BAS_MAX(a,b) (((a)>(b))?(a):(b))
 
+void BASsleep(int Milliseconds);
+
 #endif
