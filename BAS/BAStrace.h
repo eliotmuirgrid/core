@@ -34,6 +34,19 @@
 void BAStrace(const char* Pattern);
 void BASsetTraceFile(const char* FileName);
 
+//#define BAS_TRACE_OFF  // uncomment this to turn tracing off.
+#ifdef BAS_TRACE_OFF
+#define BAS_TRC(A)
+#define BAS_VAR(A)
+#define BAS_VAR2(A,B)
+#define BAS_VAR3(A,B,C)
+#define BAS_VAR4(A,B,C,D)
+#define BAS_FUNCTION(NAME)
+#define BAS_METHOD(NAME)
+#define BAS_HEX(LABEL, BUFFER, SIZE)
+#define BAS_TRACE_INIT
+#else
+
 extern BASstream BASlog;
 
 void BAStimeStamp(const char* pModule, BASstream& Stream);
@@ -117,5 +130,6 @@ private:
 #define BAS_METHOD(NAME) static int BASfOn; BASraiiFunc ggFFF(#NAME, sModule.ModuleName, __LINE__, this, (BASfOn > 0) || BASloggingEnabled(sModule.ModuleName, &BASfOn))
 
 void BASwriteIndent(BASsink* pSink, int Level);
+#endif
 
 #endif

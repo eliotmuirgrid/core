@@ -14,13 +14,17 @@
 
 // We hard code tracing into the BASargParser
 static void initTracingFlags(BASargParser* pParser){
+#ifndef BAS_TRACE_OFF
    pParser->addArgFlag("trace", "glob", "Turn on debug tracing of C++ code using glob match expression for files. i.e. --trace \"* -BASstring\" (match everything, exclude BASstring).");
    pParser->addArgFlag("out", "filename", "Redirect tracing output to a file.");
+#endif
 }
 
 static void activateTracing(BASargParser* pParser){
+#ifndef BAS_TRACE_OFF
    if (pParser->present("out"))  { BASsetTraceFile(pParser->flagArg("out").data());     }
    if (pParser->present("trace")){ BAStrace(pParser->flagArg("trace").data());}
+#endif
 }
 
 BASargParser::BASargParser(){
@@ -41,6 +45,10 @@ void BASargParser::addFlag(const BASstring& Name, const BASstring& Description){
 void BASargParser::showUsage(BASstream& Stream) const{
    Stream << "Usage:" << newline
           << " " << m_Bin;
+   if (m_Flags.size() ==0){
+      Stream << newline;
+      return;
+   }
    for(auto i=m_Flags.cbegin(); i != m_Flags.cend(); ++i){
       Stream << " --" << i.key();
       if (i.value().HasArgument){
@@ -68,12 +76,12 @@ bool BASargParser::parse(int argc, const char** argv){
             if (m_Flags.has(Flag)){
                m_Flags.value(Flag).Present = true;
                if (m_Flags.value(Flag).HasArgument){
-                 i++;
-                 if (i < argc){
+                  i++;
+                  if (i < argc){
                      m_Flags.value(Flag).ArgValue = argv[i];
-                 } else {
+                  } else {
                      return false;
-                }
+                  }
                }
             } else {
                return false;

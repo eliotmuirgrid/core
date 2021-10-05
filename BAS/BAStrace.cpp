@@ -7,7 +7,12 @@
 //-------------------------------------------------------
 
 #include "BAStrace.h"
-BAS_TRACE_INIT;
+
+#ifdef BAS_TRACE_OFF
+// Do nothing is tracing is switched off
+void BAStrace(const char* Pattern){}
+void BASsetTraceFile(const char* FileName){}
+#else
 
 #include "BASsinkFile.h"
 #include "BASglob.h"
@@ -62,7 +67,7 @@ void BAStimeStamp(const char* pModule, BASstream& Stream){
    BASlog << s_BAStimeBuffer << ".";
    char Buffer[7];
    int ms = Time.Microseconds / 1000000;
-   sprintf(Buffer,"%03i", ms);  // zero pad the millseconds
+   sprintf(Buffer,"%06i", ms);  // zero pad the millseconds
    Stream << Buffer << " " << (void*)BASthreadId() << " ";
    Stream << pModule << " ";  // TODO should output size.
    BASwriteIndent(Stream.sink(), s_BASindentLevel);
@@ -83,6 +88,7 @@ static const char* s_TracePattern = "";
 void BAStrace(const char* pPattern){
    BASout << "### Tracing files matching: " << pPattern << newline;
    s_TracePattern = strdup(pPattern);  // purposely leaked.
+   BASlog << "  Timestamp       Thread ID   File" << newline;
 }
 
 void BASsetTraceFile(const char* FileName){
@@ -142,3 +148,4 @@ void BAShexTrace(int Size, const void* pBuffer, BASstream& Stream){
    Stream << "= (size=" << Size << ")" << newline;
    BAShex(Size, pBuffer, Stream.sink(), 60);
 }
+#endif // BAS_TRACE_OFF
