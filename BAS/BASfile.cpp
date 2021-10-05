@@ -21,6 +21,9 @@ BAS_TRACE_INIT;
   #include <io.h>
 #endif
 
+#ifndef O_BINARY
+#define O_BINARY 0
+#endif
 
 int BASwriteFile(const BASstring& Name, const BASstring& Content){
    BAS_FUNCTION(BASwriteFile);

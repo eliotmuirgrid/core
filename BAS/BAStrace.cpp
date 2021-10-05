@@ -40,6 +40,10 @@ void BASsetTraceFile(const char* FileName){}
 
 #include "BASfileImp.h"
 
+#ifndef O_BINARY
+#define O_BINARY 0
+#endif
+
 #ifdef _WIN32
 BASint64 BASthreadId(){ return (BASint64)GetCurrentThreadId(); }
 #else

@@ -22,10 +22,6 @@
    #define BASseek  ::lseek
 #endif
 
-#ifndef O_BINARY
-#  define O_BINARY 0
-#endif
-
 #ifdef _WIN32
   #define O_RDONLY _O_RDONLY
   #define S_IREAD _S_IREAD
