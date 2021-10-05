@@ -68,11 +68,10 @@ void BAStimeStamp(const char* pModule, BASstream& Stream){
       struct tm* tm = localtime(&s_BASlastTimeStamp);
       strftime(s_BAStimeBuffer, sizeof(s_BAStimeBuffer), "  %H:%M:%S", tm); 
    }
-   BASlog << s_BAStimeBuffer << ".";
+   BASlog << s_BAStimeBuffer;
    char Buffer[7];
-   int ms = Time.Microseconds / 1000000;
-   sprintf(Buffer,"%06i", ms);  // zero pad the millseconds
-   Stream << Buffer << " " << (void*)BASthreadId() << " ";
+   sprintf(Buffer,".%06lli", Time.Microseconds);  // zero pad the millseconds
+   Stream << Buffer << " " << BASthreadId() << " ";
    Stream << pModule << " ";  // TODO should output size.
    BASwriteIndent(Stream.sink(), s_BASindentLevel);
 }

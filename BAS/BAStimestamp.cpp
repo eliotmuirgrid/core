@@ -7,11 +7,16 @@
 //-------------------------------------------------------
 #include "BAStimestamp.h"
 
+#include "BASstream.h"
+
 #ifdef _WIN32
    #include <windows.h>
    BAStimestamp BAScurrentTime(){
+      SYSTEMTIME st;
+      GetSystemTime(&st);
       FILETIME ftime;
-      GetSystemTimeAsFileTime(&ftime);
+      SystemTimeToFileTime(&st, &ftime);
+      //GetSystemTimeAsFileTime(&ftime);
       const BASint64 DELTA_EPOCH_IN_USEC = 11644473600000000 /*LL*/;
       BASint64 v = ftime.dwHighDateTime;
       v = v << 32;
@@ -19,8 +24,8 @@
       v /= 10;   // convert from 100 nanosecond periods to microseconds
       v -= DELTA_EPOCH_IN_USEC;  // convert to Unix epoch
       BAStimestamp Timestamp;
-      Timestamp.Seconds = v / 1000000;
-      Timestamp.Microseconds = v % 100000;
+      Timestamp.Seconds =      v / 1000000;
+      Timestamp.Microseconds = v % 1000000;
       return Timestamp;
    }
 #else
@@ -30,7 +35,7 @@
       clock_gettime(CLOCK_REALTIME, &spec);
       BAStimestamp Timestamp;
       Timestamp.Seconds = spec.tv_sec;
-      Timestamp.Microseconds = spec.tv_nsec * 1000;
+      Timestamp.Microseconds = spec.tv_nsec / 1000;
       return Timestamp;
    }
 #endif
