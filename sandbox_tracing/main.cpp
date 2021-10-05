@@ -1,18 +1,23 @@
 // C++ tracing sandbox
 
 
+#include "APPfactorial.h"
+
 #include <BAS/BASargParser.h>
-
 #include <BAS/BAStrace.h>
-BAS_TRACE_INIT;
+BAS_TRACE_INIT;   // Need this to initialize tracing.
 
-#include "APPfoo.h"
-
-void APPlocalFunction(){
-   BAS_FUNCTION(APPlocalFunction);
+void APPrepeatSentence(const BASstring& Sentence){
+   BAS_FUNCTION(APPrepeatSentence);
+   BAS_VAR(Sentence);
+   BASstring Result;
    BAS_TRC("About to print hello world...");
-   BASout << "Hello world!" << newline;
-   BAS_TRC("Printed hello world!");
+   for (int i=0; i < 4; i++){
+      BAS_VAR(i);
+      Result = Result + Sentence + "\n";
+   }
+   BAS_HEX("Result", Result.data(), Result.size());
+   BASout << Result;
 }
 
 int main(int argc, const char** argv){
@@ -22,11 +27,10 @@ int main(int argc, const char** argv){
    }
    BAS_FUNCTION(main);
    BAS_TRC("Going to call APPlocalFunction");
-   APPlocalFunction();
-   BAS_TRC("Creating Foo object");
-   APPfoo Foo;
-   BAS_TRC("About to call run on Foo");
-   Foo.run("Rabbit", 5);;
+   BASstring Sentence="The quick brown fox jumped over the lazy dog.";
+   APPrepeatSentence(Sentence);
+   int N = 6;
+   BASout << "Factorial  " << N << "! = " << APPfactorial(N) << newline;
    BAS_TRC("All done!");
    return 0;
 }

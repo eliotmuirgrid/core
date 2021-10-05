@@ -57,7 +57,7 @@ void BAStimeStamp(const char* pModule, BASstream& Stream){
    if (s_BASlastTimeStamp != Time.Seconds){  //Calculating the Julian date from unix epoch is CPU intensive, so only do it when you need to.
       s_BASlastTimeStamp = Time.Seconds;
       struct tm* tm = localtime(&s_BASlastTimeStamp);
-      strftime(s_BAStimeBuffer, sizeof(s_BAStimeBuffer), "T %H:%M:%S", tm); 
+      strftime(s_BAStimeBuffer, sizeof(s_BAStimeBuffer), "  %H:%M:%S", tm); 
    }
    BASlog << s_BAStimeBuffer << ".";
    char Buffer[7];
