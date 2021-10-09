@@ -13,6 +13,9 @@ int main(){
    BAStrace("*");
    BAS_FUNCTION(main);
    printf("Hello world of threading\n");
-   BASthread(&ThreadProc, (void*)111);
+   for (int i=0; i < 10; i++){
+      BAS_VAR(i);
+      BASthread(&ThreadProc, (void*)i);
+   }
    return 0;
 }
