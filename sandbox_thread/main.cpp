@@ -1,6 +1,7 @@
 #include <stdio.h>
 
 #include <BAS/BASthread.h>
+#include <BAS/BASutil.h>
 #include <BAS/BAStrace.h>
 BAS_TRACE_INIT;
 
@@ -17,5 +18,6 @@ int main(){
       BAS_VAR(i);
       BASthread(&ThreadProc, (void*)i);
    }
+   BASsleep(1000);
    return 0;
 }
