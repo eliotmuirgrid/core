@@ -96,7 +96,7 @@ void BAStrace(const char* pPattern){
 
 void BASsetTraceFile(const char* FileName){
    int ErrorCode;
-   int FileHandle = BASopen(FileName, O_BINARY | O_RDWR | O_CREAT | O_TRUNC , S_IREAD | S_IWRITE);  
+   int FileHandle = BASopen(FileName, O_BINARY | O_RDWR | O_CREAT | O_TRUNC , S_IRUSR | S_IWUSR);  
    if (FileHandle == -1){
       BASout << "### Failed to open " << FileName << " for tracing." << newline;
       return;

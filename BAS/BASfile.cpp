@@ -55,9 +55,9 @@ int BASfileOpen(const char* FileName, BASfileOpenMode Mode, int* pErrorCode){
    int FileHandle = -1;
    switch (Mode){
    case BASFread:    FileHandle=BASopen(FileName, O_BINARY | O_RDONLY);                                        break;
-   case BASFwrite:   FileHandle=BASopen(FileName, O_BINARY | O_RDWR                     , S_IREAD | S_IWRITE); break;
-   case BASFappend:  FileHandle=BASopen(FileName, O_BINARY | O_RDWR | O_CREAT | O_APPEND, S_IREAD | S_IWRITE); break;
-   case BASFrewrite: FileHandle=BASopen(FileName, O_BINARY | O_RDWR | O_CREAT | O_TRUNC , S_IREAD | S_IWRITE); break;
+   case BASFwrite:   FileHandle=BASopen(FileName, O_BINARY | O_RDWR                     , S_IRUSR | S_IWUSR); break;
+   case BASFappend:  FileHandle=BASopen(FileName, O_BINARY | O_RDWR | O_CREAT | O_APPEND, S_IRUSR | S_IWUSR); break;
+   case BASFrewrite: FileHandle=BASopen(FileName, O_BINARY | O_RDWR | O_CREAT | O_TRUNC , S_IRUSR | S_IWUSR); break;
    }
    if (FileHandle == -1) { *pErrorCode = errno; BAS_VAR(*pErrorCode); }
    BAS_VAR(FileHandle);
