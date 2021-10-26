@@ -13,7 +13,7 @@ ifdef ComSpec  # ComSpec is just defined for Windows
 	OBJECTS := $(subst .o,.obj, $(OBJECTS))
 	TARGET := test.exe
 else # We use ccache on our posix compiles if it is present.
-   CFLAGS   := -MMD
+   CFLAGS   := -MMD -I../
    CXXFLAGS := -MMD -fno-exceptions -fno-unwind-tables -fno-asynchronous-unwind-tables -I../ -std=c++11
    CCACHE := $(shell command -v ccache  2> /dev/null)
    ifdef CCACHE
@@ -27,7 +27,7 @@ test.exe:	$(OBJECTS)
 	cl $(OBJECTS) /nologo /link /out:test.exe
 
 test:	$(OBJECTS) $(SOURCES)
-	$(CC) $(OBJECTS) -lm -lstdc++ -o test
+	$(CC) $(OBJECTS) -lm -lstdc++ -liconv -o test
 
 # Windows build command
 %.obj:	%.cpp
