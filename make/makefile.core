@@ -27,7 +27,7 @@ test.exe:	$(OBJECTS)
 	cl $(OBJECTS) advapi32.lib /nologo /link /out:test.exe
 
 test:	$(OBJECTS) $(SOURCES)
-	$(CC) $(OBJECTS) -lm -lstdc++ -liconv -o test
+	$(CC) $(OBJECTS) -lm -lstdc++ -o test
 
 # Windows build command
 %.obj:	%.cpp
