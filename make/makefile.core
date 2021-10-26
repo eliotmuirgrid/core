@@ -1,31 +1,31 @@
-SEARCH  := $(foreach dir, $(DIRS),../$(dir)/*.cpp ../$(dir)/*.c) *.c *.cpp  
-DLIST   := $(foreach dir, $(DIRS),../$(dir)/*.obj ../$(dir)/*.o ../$(dir)/*.d) *.obj *.o *.d
-SOURCES := $(wildcard $(SEARCH))
-OBJECTS := $(patsubst %.cpp,%.o,$(SOURCES))
-OBJECTS := $(patsubst %.c,%.o,$(OBJECTS))
-DEPENDS := $(subst .o,.d, $(OBJECTS))
+# Create a list of all the source files in our directories
+SEARCH   := $(foreach dir, $(DIRS),../$(dir)/*.cpp ../$(dir)/*.c) *.c *.cpp  
+SOURCES  := $(wildcard $(SEARCH))
+OBJECTS  := $(patsubst %.cpp,%.o,$(SOURCES))
+OBJECTS  := $(patsubst %.c,%.o,$(OBJECTS))
+DEPENDS  := $(subst .o,.d, $(OBJECTS))
 TARGET=test
 
 ifdef ComSpec  # ComSpec is just defined for Windows
-	RM=del /F /Q
 	OBJECTS := $(subst /,\, $(OBJECTS))
-   DLIST := $(subst /,\, $(DLIST))
 	OBJECTS := $(subst .o,.obj, $(OBJECTS))
 	TARGET := test.exe
 else # We use ccache on our posix compiles if it is present.
-   CFLAGS   := -MMD -I../
-   CXXFLAGS := -MMD -fno-exceptions -fno-unwind-tables -fno-asynchronous-unwind-tables -I../ -std=c++11
-   CCACHE := $(shell command -v ccache  2> /dev/null)
-   ifdef CCACHE
-      CC := ccache $(CC)
-   endif
+	CFLAGS   := -MMD -I../
+	CXXFLAGS := -MMD -fno-exceptions -fno-unwind-tables -fno-asynchronous-unwind-tables -I../ -std=c++11
+	CCACHE := $(shell command -v ccache  2> /dev/null)
+	ifdef CCACHE
+		CC := ccache $(CC)
+	endif
 endif
 
 all:	$(TARGET)
 
+# Windows link command
 test.exe:	$(OBJECTS) 
 	cl $(OBJECTS) advapi32.lib /nologo /link /out:test.exe
 
+# Posix link command
 test:	$(OBJECTS) $(SOURCES)
 	$(CC) $(OBJECTS) -lm -lstdc++ -o test
 
@@ -44,8 +44,13 @@ info:
 	@echo $(SOURCES)
 	@echo $(OBJECTS)
 	@echo $(DEPENDS)
-	@echo $(DLIST)
+
+# Define our clean rule - we try to use the native DEL under windows
+RMLIST   := $(foreach dir, $(DIRS),../$(dir)/*.obj ../$(dir)/*.o ../$(dir)/*.d) *.d *.o *.obj $(TARGET)
+ifdef ComSpec  # ComSpec is just defined for Windows
+	RM=del /F /Q
+	RMLIST := $(subst /,\, $(RMLIST))
+endif
 
 clean:
-	-$(RM) $(TARGET) $(DLIST)
-
+	-$(RM) $(RMLIST)
