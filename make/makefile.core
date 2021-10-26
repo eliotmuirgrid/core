@@ -24,7 +24,7 @@ endif
 all:	$(TARGET)
 
 test.exe:	$(OBJECTS) 
-	cl $(OBJECTS) /nologo /link /out:test.exe
+	cl $(OBJECTS) advapi32.lib /nologo /link /out:test.exe
 
 test:	$(OBJECTS) $(SOURCES)
 	$(CC) $(OBJECTS) -lm -lstdc++ -liconv -o test
